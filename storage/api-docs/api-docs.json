@@ -1,0 +1,40 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Lumy",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost"
+        }
+    ],
+    "paths": {
+        "/api/app/clients/client_info": {
+            "get": {
+                "summary": "Get the information of the cliente, including th content for 'About Me' page and the client's settings.",
+                "operationId": "App\\Http\\Controllers\\ClientController::getClientInfo",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "description": "Response base on structure of database view 'view_clients_info'"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "HTML content to display in frontend."
+                    }
+                }
+            }
+        }
+    }
+}

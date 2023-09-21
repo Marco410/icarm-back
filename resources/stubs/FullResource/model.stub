@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Models;
+
+// use App\Scopes\{{name}}Scope;
+use App\Traits\Models\AccessorsMutators\{{name}} as {{name}}AccessorsMutators;
+use App\Traits\Models\Booted\{{name}} as {{name}}Booted;
+use App\Traits\Models\LocalScopes\{{name}} as {{name}}LocalScopes;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class {{name}} extends ApiModel
+{
+    use SoftDeletes, {{name}}AccessorsMutators, {{name}}Booted, {{name}}LocalScopes;
+
+    protected $fillable = [
+        {{fields}}
+    ];
+
+    protected $hidden = [
+        'deleted_at'
+    ];
+
+    protected $appends = [
+    ];
+
+    public static $rulesInsert = [
+        // {{rules}}
+    ];
+
+    public static $rulesUpdate = [
+        // {{rules}}
+    ];
+
+    // protected static function boot()
+    // {
+    //     parent::boot();
+    //     static::addGlobalScope(new {{name}}Scope);
+    // }
+}

@@ -1,0 +1,45 @@
+<?php
+
+use App\Models\{{name}};
+use Illuminate\Database\Seeder;
+
+class {{name}}Seeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        // $this->truncateTable();
+
+        // $this->disableEventListeners();
+
+        // foreach ($this->getListSeeds() as $seed) {
+        //     {{name}}::create($seed);
+        // }
+
+        // factory({{name}}::class, 13);
+    }
+
+    private function truncateTable()
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        {{name}}::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+    }
+
+    private function disableEventListeners()
+    {
+        {{name}}::flushEventListeners();
+    }
+
+    private function getListSeeds()
+    {
+        return [
+            [{{fields}}],
+            [{{fields}}]
+        ];
+    }
+}

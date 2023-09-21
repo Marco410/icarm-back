@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Traits\Models\LocalScopes;
+
+trait {{name}}
+{
+    /**
+     * Scope a query to only include active {{name}}.
+     *
+     * {{name}}::active()
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    // public function scopeActive($query)
+    // {
+    //     return $query->where('active', 1);
+    // }
+    
+    /**
+     * Scope a query to only include {{name}} model of a given type.
+     *
+     * {{name}}::ofType('admin')->get();
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  mixed  $type
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    // public function scopeOfType($query, $type)
+    // {
+    //    return $query->where('type', $type);
+    // }
+}

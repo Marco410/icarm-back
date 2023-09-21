@@ -1,0 +1,84 @@
+<?php
+
+namespace App\Http\Controllers\Resources;
+
+use App\Http\Controllers\ApiController;
+use App\Http\Requests\{{name}}InsertRequest;
+use App\Http\Requests\{{name}}UpdateRequest;
+use App\Models\{{name}};
+use Illuminate\Http\Request;
+
+class {{name}}Controller extends ApiController
+{
+    function __construct()
+    {
+        parent::__construct();
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return $this->ok({{name}}::all());
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\{{name}}InsertRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store({{name}}InsertRequest $request)
+    {
+        $request->validated();
+
+        $fields = $request->all();
+
+        $data = {{name}}::create($fields);
+
+        return $this->created($data);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  {{name}}  ${{nameParam}}
+     * @return \Illuminate\Http\Response
+     */
+    public function show({{name}} ${{nameParam}})
+    {
+        return $this->ok(${{nameParam}});
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\{{name}}UpdateRequest  $request
+     * @param  {{name}}  ${{nameParam}}
+     * @return \Illuminate\Http\Response
+     */
+    public function update({{name}}UpdateRequest $request, {{name}} ${{nameParam}})
+    {
+        $request->validated();
+
+        $fields = $request->all();
+
+        ${{nameParam}}->update($fields);
+
+        return $this->ok(${{nameParam}});
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  {{name}}  ${{nameParam}}
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy({{name}} ${{nameParam}})
+    {
+        ${{nameParam}}->delete();
+        return $this->ok(${{nameParam}});
+    }
+}
