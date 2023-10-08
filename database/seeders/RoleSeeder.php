@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Models\User;
+use App\Models\Pais;
 
 class RoleSeeder extends Seeder
 {
@@ -34,6 +35,9 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'admin.brands.add'])->syncRoles([$role1]);
         Permission::create(['name' => 'admin.brands.edit'])->syncRoles([$role1]);
         Permission::create(['name' => 'admin.brands.delete'])->syncRoles([$role1]); */
+        Pais::create([
+            'nombre' => 'México'
+        ]);
 
         User::create([
             'nombre' => 'Admin',
@@ -41,7 +45,9 @@ class RoleSeeder extends Seeder
             'apellido_p' => 'ICARM',
             'telefono' => '123',
             'fecha_nacimiento' => '01/01/23',
+            'sexo' => 'masculino',
             'password' =>hash('sha512', '1234567890'),
+            'pais_id' => 1
         ])->assignRole('Admin');
 
         User::create([
@@ -49,11 +55,14 @@ class RoleSeeder extends Seeder
             'email' => 'everthmarquez@hotmail.com',
             'apellido_p' => 'Perez',
             'telefono' => '123',
+            'sexo' => 'masculino',
             'fecha_nacimiento' => '01/01/23',
-
-
             'password' =>hash('sha512', '1234567890'),
+            'pais_id' => 1
+
         ])->assignRole('Lider');
+
+        
 
     } 
 }

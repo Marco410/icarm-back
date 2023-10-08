@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('apellido_m')->nullable();
             $table->string('telefono',10);
             $table->string('email',255);
+            $table->string('sexo');
             $table->date('fecha_nacimiento');
             $table->string('password',255);
             //preguntar por contraseña
