@@ -70,12 +70,12 @@ class AuthController extends ApiController
             }
         }
 
-        if ($newLogin) {
+       /*  if ($newLogin) {
             $userSession = UserSession::newLogin([
                 'user_id' => $user->id,
                 'token' => $token
             ]);
-        }
+        } */
 
         $user->roles;
 
@@ -140,7 +140,6 @@ class AuthController extends ApiController
             'estado' => $request->estado,
             'ciudad' => $request->ciudad,
             'telefono' => $request->telefono,
-            'embarazada' => $request->embarazada,
             'active' => 1
         ])->assignRole('Mama');
 
