@@ -147,26 +147,10 @@ class AuthController extends ApiController
         $token = JWTAuth::claims($customClaims)->fromUser($user);
         $newLogin = true;
 
-
-        if ($newLogin) {
-            $userSession = UserSession::newLogin([
-                'user_id' => $user->id,
-                'token' => $token
-            ]);
-        }
-        
-        if($request->email_confirm){
-            //TODO: enviar email
-        }
-
         return $this->ok([
             'token' => $token,
             'user' => $user,
-            'tokenType' => 'bearer'/* ,
-            'expiresIn' => JWTAuth::factory()->getTTL() * 60,
-            // '$newLogin' => $newLogin,
-            // '$$accessLog' => $$accessLog
-            // '$userSession' => $userSession */
+            'tokenType' => 'bearer'
         ]);
     }
 }
