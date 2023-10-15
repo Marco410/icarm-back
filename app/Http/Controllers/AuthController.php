@@ -133,15 +133,12 @@ class AuthController extends ApiController
             'nombre' => $request->nombre,
             'apellido_p' => $request->apellido_p,
             'apellido_m' => $request->apellido_m,
-            'fecha_nacimiento' => $request->fecha_nacimiento,
+            'fecha_nacimiento' => $request->fecha_nacimiento . '00:00:00',
             'email' => $email,
             'password' => $password,
-            'pais' => $request->pais,
-            'estado' => $request->estado,
-            'ciudad' => $request->ciudad,
             'telefono' => $request->telefono,
             'active' => 1
-        ])->assignRole('Mama');
+        ])->assignRole('Usuario');
 
         $customClaims = ['custom' => [/*'user' => $user*/]];
 
