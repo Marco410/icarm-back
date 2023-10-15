@@ -137,6 +137,7 @@ class AuthController extends ApiController
             'email' => $email,
             'password' => $password,
             'telefono' => $request->telefono,
+            'sexo' => $request->sexo,
             'active' => 1
         ])->assignRole('Usuario');
 
