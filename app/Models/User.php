@@ -17,7 +17,7 @@ class User extends Authenticatable implements JWTSubject
 
 
     protected $fillable = [
-        'nombre', 'apellido_p', 'apellido_m','telefono','email','fecha_nacimiento', 'sexo','password'
+        'nombre', 'apellido_p', 'apellido_m','telefono','email','fecha_nacimiento', 'sexo','password','pais_id'
     ];
 
     protected $hidden =[
@@ -30,6 +30,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function evento(){
         return $this->hasMany(Evento::class);
+    }
+
+    public function pais(){
+        return $this->hasMany(Pais::class);
     }
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
