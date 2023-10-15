@@ -133,7 +133,7 @@ class AuthController extends ApiController
             'nombre' => $request->nombre,
             'apellido_p' => $request->apellido_p,
             'apellido_m' => $request->apellido_m,
-            'fecha_nacimiento' => $request->fecha_nacimiento . ' 00:00:00',
+            'fecha_nacimiento' => $request->fecha_nacimiento,
             'email' => $email,
             'password' => $password,
             'telefono' => $request->telefono,
