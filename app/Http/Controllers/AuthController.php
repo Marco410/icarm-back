@@ -80,13 +80,11 @@ class AuthController extends ApiController
         $user->roles;
 
         return $this->ok([
-            'token' => $token,
-            'user' => $user,
-            'tokenType' => 'bearer'/* ,
-            'expiresIn' => JWTAuth::factory()->getTTL() * 60,
-            // '$newLogin' => $newLogin,
-            // '$$accessLog' => $$accessLog
-            // '$userSession' => $userSession */
+            'status' => 'Success', 
+            'data' => [
+                'token' => $token,
+                'user' => $user,
+            ]
         ]);
     }
 
@@ -129,7 +127,7 @@ class AuthController extends ApiController
         $email = $request->email;
         $password = hash('sha512', $request->password);
 
-        $user = User::create([
+        $user = User::create([ 
             'nombre' => $request->nombre,
             'apellido_p' => $request->apellido_p,
             'apellido_m' => $request->apellido_m,
@@ -150,7 +148,6 @@ class AuthController extends ApiController
         return $this->ok([
             'token' => $token,
             'user' => $user,
-            'tokenType' => 'bearer'
         ]);
     }
 }
