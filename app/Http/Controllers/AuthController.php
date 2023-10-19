@@ -46,10 +46,6 @@ class AuthController extends ApiController
             return $this->forbidden('Contraseña incorrecta', 403.01);
         }
 
-       /*  if (!$user->active) {
-            return $this->forbidden('Usuario inactivo', 403.02);
-        } */
-
         $customClaims = ['custom' => [/*'user' => $user*/]];
 
         $token = JWTAuth::claims($customClaims)->fromUser($user);
@@ -69,13 +65,6 @@ class AuthController extends ApiController
                 }
             }
         }
-
-       /*  if ($newLogin) {
-            $userSession = UserSession::newLogin([
-                'user_id' => $user->id,
-                'token' => $token
-            ]);
-        } */
 
         $user->roles;
 
@@ -146,8 +135,12 @@ class AuthController extends ApiController
         $newLogin = true;
 
         return $this->ok([
-            'token' => $token,
-            'user' => $user,
+            'status' => 'Success',
+            'data' => [
+                'token' => $token,
+                'user' => $user,
+
+            ]
         ]);
     }
 }
