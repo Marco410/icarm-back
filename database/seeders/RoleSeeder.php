@@ -42,7 +42,7 @@ class RoleSeeder extends Seeder
         User::create([
             'nombre' => 'Admin',
             'email' => 'admin@gmail.com',
-            'apellido_p' => 'ICARM',
+            'apellido_paterno' => 'ICARM',
             'telefono' => '123',
             'fecha_nacimiento' => '01/01/23',
             'sexo' => 'masculino',
@@ -53,7 +53,7 @@ class RoleSeeder extends Seeder
         User::create([
             'nombre' => 'Everth',
             'email' => 'everthmarquez@hotmail.com',
-            'apellido_p' => 'Perez',
+            'apellido_paterno' => 'Perez',
             'telefono' => '123',
             'sexo' => 'masculino',
             'fecha_nacimiento' => '01/01/23',

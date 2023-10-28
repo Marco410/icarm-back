@@ -118,8 +118,8 @@ class AuthController extends ApiController
 
         $user = User::create([ 
             'nombre' => $request->nombre,
-            'apellido_p' => $request->apellido_p,
-            'apellido_m' => $request->apellido_m,
+            'apellido_paterno' => $request->apellido_paterno,
+            'apellido_materno' => $request->apellido_materno,
             'fecha_nacimiento' => $request->fecha_nacimiento,
             'email' => $email,
             'password' => $password,
@@ -142,5 +142,16 @@ class AuthController extends ApiController
 
             ]
         ]);
+    }
+
+    public function findUserRegister(Request $request){
+
+        $nombre = $request->nombre;
+        $a_paterno = $request->a_paterno;
+        $a_materno = $request->a_materno;
+
+        return $request;
+
+
     }
 }
