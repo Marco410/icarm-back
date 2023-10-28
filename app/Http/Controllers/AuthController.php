@@ -15,7 +15,7 @@ class AuthController extends ApiController
     {
         parent::__construct();
         // $this->middleware('auth:api', ['except' => ['login', 'test']]);
-        $this->middleware('verify.authorization.jwt', ['except' => ['login', 'test','register']]);
+        $this->middleware('verify.authorization.jwt', ['except' => ['login', 'test','register','find']]);
     }
 
     protected function validator(array $data)
@@ -139,19 +139,17 @@ class AuthController extends ApiController
             'data' => [
                 'token' => $token,
                 'user' => $user,
-
             ]
         ]);
     }
 
-    public function findUserRegister(Request $request){
-
+    public function find(Request $request){
         $nombre = $request->nombre;
         $a_paterno = $request->a_paterno;
         $a_materno = $request->a_materno;
 
-        return $request;
+        $usersFind = User::where('nombre', 'like', '%' . $nombre . '%')->where('apellido_paterno', 'like', '%' . $a_paterno . '%')->where('apellido_materno', 'like', '%' . $a_materno . '%')->take(5)->get();
 
-
+        return $usersFind;
     }
 }
