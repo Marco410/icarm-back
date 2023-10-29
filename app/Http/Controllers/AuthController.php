@@ -168,7 +168,7 @@ class AuthController extends ApiController
 
         return $this->ok([
             'status' => 'Success',
-            'data' => $userRole
+            'data' => []
         ]);
     }
 
