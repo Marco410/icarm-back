@@ -17,7 +17,7 @@ class User extends Authenticatable implements JWTSubject
 
 
     protected $fillable = [
-        'nombre', 'apellido_paterno', 'apellido_materno','telefono','email','fecha_nacimiento', 'sexo','password','pais_id'
+        'nombre', 'apellido_paterno', 'apellido_materno','telefono','email','fecha_nacimiento', 'sexo','password','pais_id','firebase_token','active'
     ];
 
     protected $hidden =[

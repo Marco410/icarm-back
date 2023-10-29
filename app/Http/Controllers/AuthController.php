@@ -15,7 +15,7 @@ class AuthController extends ApiController
     {
         parent::__construct();
         // $this->middleware('auth:api', ['except' => ['login', 'test']]);
-        $this->middleware('verify.authorization.jwt', ['except' => ['login', 'test','register','find']]);
+        $this->middleware('verify.authorization.jwt', ['except' => ['login', 'test','register','find','update']]);
     }
 
     protected function validator(array $data)
@@ -140,6 +140,35 @@ class AuthController extends ApiController
                 'token' => $token,
                 'user' => $user,
             ]
+        ]);
+    }
+
+    public function update(Request $request){
+
+        $user = User::where('id', $request->userId)->update([ 
+            'nombre' => $request->nombre,
+            'apellido_paterno' => $request->apellido_paterno,
+            'apellido_materno' => $request->apellido_materno,
+            'fecha_nacimiento' => $request->fecha_nacimiento,
+            'email' => $request->email,
+            'telefono' => $request->telefono,
+            'sexo' => $request->sexo,
+            'pais_id' => $request->pais_id,
+            'active' => 1
+        ]);
+
+        if($request->password){
+            $password = hash('sha512', $request->password);
+            $userPass = User::where('id', $request->userId)->update([ 
+                'password' => $password,
+            ]);
+
+            $userRole = User::where('id',$request->userId)->first()->assignRole('Usuario');
+        }
+
+        return $this->ok([
+            'status' => 'Success',
+            'data' => [ ]
         ]);
     }
 
