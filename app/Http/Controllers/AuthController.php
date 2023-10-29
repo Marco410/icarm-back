@@ -163,7 +163,7 @@ class AuthController extends ApiController
                 'password' => $password,
             ]);
 
-            $userRole = User::where('id',$request->userId)->first()->assignRole('Usuario');
+            //$userRole = User::where('id',$request->userId)->first()->assignRole('Usuario');
         }
 
         return $this->ok([
