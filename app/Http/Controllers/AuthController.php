@@ -179,7 +179,7 @@ class AuthController extends ApiController
         $a_paterno = $request->a_paterno;
         $a_materno = $request->a_materno;
 
-        $usersFind = User::where('nombre', 'like', '%' . $nombre . '%')->where('apellido_paterno', 'like', '%' . $a_paterno . '%')->where('apellido_materno', 'like', '%' . $a_materno . '%')->where('email','')->take(5)->get();
+        $usersFind = User::where('nombre', 'like', '%' . $nombre . '%')->where('apellido_paterno', 'like', '%' . $a_paterno . '%')->where('apellido_materno', 'like', '%' . $a_materno . '%')->take(5)->get();
 
         return $this->ok([
             'status' => 'Success',
