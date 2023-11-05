@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\FirebaseToken;
 use App\Models\UserSession;
 
 use Illuminate\Http\Request;
@@ -14,8 +15,7 @@ class AuthController extends ApiController
     public function __construct()
     {
         parent::__construct();
-        // $this->middleware('auth:api', ['except' => ['login', 'test']]);
-        $this->middleware('verify.authorization.jwt', ['except' => ['login', 'test','register','find','update']]);
+       
     }
 
     protected function validator(array $data)
@@ -186,6 +186,24 @@ class AuthController extends ApiController
             'data' => [
                 'users' => $usersFind,
             ]
+        ]);
+    }
+
+    public function updateFirebase(Request $request){
+
+        $fire = FirebaseToken::where('token', $request->firebase_token)->first();
+        $firebase = "";
+
+        if(!$fire){
+            $firebase = FirebaseToken::create([
+                'user_id' => $request->userId,
+                'token' => $request->firebase_token
+            ]);
+        }
+
+        return $this->ok([
+            'status' => 'Success',
+            'data' => []
         ]);
     }
 }

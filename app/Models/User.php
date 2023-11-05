@@ -35,6 +35,11 @@ class User extends Authenticatable implements JWTSubject
     public function pais(){
         return $this->hasMany(Pais::class);
     }
+
+    public function firebaseToken(){
+        return $this->hasMany(FirebaseToken::class);
+    }
+    
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
