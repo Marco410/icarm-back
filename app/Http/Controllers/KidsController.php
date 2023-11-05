@@ -52,7 +52,7 @@ class KidsController extends ApiController
             return $this->ok([
                 'status' => 'Success', 
                 'data' => [
-                    'kid' => $kids,
+                    'kids' => $kids,
                 ]
             ]);
         }else{
