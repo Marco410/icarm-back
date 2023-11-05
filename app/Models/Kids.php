@@ -16,7 +16,7 @@ class Kids extends Model
     ];
 
     protected $hidden = [
-        'id','updated_at','created_at'
+        'updated_at'
     ];
 
     
