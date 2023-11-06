@@ -108,13 +108,21 @@ class AuthController extends ApiController
 
     public function register(Request $request){
 
-        $this->validate($request,[
-            'email' => 'required|unique:users,email',
-        ]);
         $nombre = $request->nombre;
         $apellidos = $request->apellidos;
         $email = $request->email;
         $password = hash('sha512', $request->password);
+
+
+        $u = User::where('email',$email)->first();
+
+        if($u){
+            return $this->badRequest([
+                'status' => 'Error', 
+                'message' => 'Ya hay un usuario con este correo. Intenta iniciar sesión'
+            ]);
+        }
+
 
         $user = User::create([ 
             'nombre' => $request->nombre,

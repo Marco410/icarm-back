@@ -17,8 +17,6 @@ class PaseListaController extends ApiController
     }
 
     public function getUser(Request $request){
-
-
         $user = User::where('id',$request->user_id)->first();
 
         if($user){
