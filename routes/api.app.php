@@ -18,4 +18,8 @@ Route::group([
     Route::get('kids/delete', 'KidsController@delete');
     Route::put('kids/update', 'KidsController@update');
 
+
+    Route::post('pase-lista/add', 'PaseListaController@add');
+    Route::get('pase-lista/get-user', 'PaseListaController@getUser');
+
 });
