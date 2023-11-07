@@ -52,7 +52,7 @@ class PaseListaController extends ApiController
         }
 
         $paseLista = PaseLista::create([
-            'id_persona' => $user,
+            'id_persona' => $user->id,
             'evento' => $evento->nombre,
             'fh' => $datetime
         ]);
