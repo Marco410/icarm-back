@@ -39,7 +39,10 @@ class AuthController extends ApiController
         $user = $user->where('email', $request->email)->first();
         
         if (empty($user)) {
-            return $this->notFound('Usuario no encontrado', 404.01);
+            return [
+                'status' => 'Error',
+                'message' => 'Usuario no encontrado'
+            ];
         }
 
         if ($user->password != hash('sha512', $request->password)) {
