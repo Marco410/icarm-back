@@ -26,3 +26,4 @@ Homestead.json
 storage/.DS_Store
 storage/framework/.DS_Store
 .env
+.env
