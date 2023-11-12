@@ -34,7 +34,6 @@ class AuthController extends ApiController
      */
     public function login(Request $request)
     {
-//COMENTARIo
         $user = new User();
         $user = $user->where('email', $request->email)->first();
         
