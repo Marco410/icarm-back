@@ -26,7 +26,7 @@ class AuthController extends ApiController
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
-
+    #comentario
     /**
      * Get a JWT via given credentials.
      *
