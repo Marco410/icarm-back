@@ -219,15 +219,13 @@ class AuthController extends ApiController
 
     public function deleteAccount(Request $request){
 
-        return $request;
-
         $user = User::where('id', $request->userId)->update([ 
             'active' => 0
         ]);
 
         return $this->ok([
             'status' => 'Success',
-            'messagge' => 'Cuenta eliminada con éxito.ß'
+            'messagge' => 'Cuenta eliminada con éxito.'
         ]);
     }
 }
