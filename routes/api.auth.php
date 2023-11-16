@@ -8,7 +8,8 @@ Route::post('update', 'AuthController@update');
 Route::post('find', 'AuthController@find');
 Route::post('updateFirebase', 'AuthController@updateFirebase');
 
+Route::post('delete', 'AuthController@deleteAccount');
+
 Route::post('logout', 'AuthController@logout');
-Route::post('delete-account', 'AuthController@deleteAccount');
 
 Route::post('refresh', 'AuthController@refresh');
