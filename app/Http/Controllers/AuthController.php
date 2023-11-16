@@ -35,7 +35,7 @@ class AuthController extends ApiController
     public function login(Request $request)
     {
         $user = new User();
-        $user = $user->where('email', $request->email)->first();
+        $user = $user->where('email', $request->email)->where('active',1)->first();
         
         if (empty($user)) {
             return [
@@ -214,6 +214,20 @@ class AuthController extends ApiController
         return $this->ok([
             'status' => 'Success',
             'data' => []
+        ]);
+    }
+
+    public function deleteAccount(Request $request){
+
+        return $request;
+
+        $user = User::where('id', $request->userId)->update([ 
+            'active' => 0
+        ]);
+
+        return $this->ok([
+            'status' => 'Success',
+            'messagge' => 'Cuenta eliminada con éxito.ß'
         ]);
     }
 }
