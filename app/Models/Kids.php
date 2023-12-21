@@ -19,5 +19,13 @@ class Kids extends Model
         'updated_at'
     ];
 
+    public function classroom()
+    {
+        return $this->belongsTo(Classroom::class);
+    }
+
+    public function user(){
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
     
 }

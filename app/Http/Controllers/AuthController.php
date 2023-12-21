@@ -45,7 +45,10 @@ class AuthController extends ApiController
         }
 
         if ($user->password != hash('sha512', $request->password)) {
-            return $this->forbidden('Contraseña incorrecta', 403.01);
+            return [
+                'status' => 'Error',
+                'message' => 'Contraseña incorrecta'
+            ]; 
         }
 
         $customClaims = ['custom' => [/*'user' => $user*/]];
@@ -225,7 +228,7 @@ class AuthController extends ApiController
 
         return $this->ok([
             'status' => 'Success',
-            'messagge' => 'Cuenta eliminada con éxito.'
+            'message' => 'Cuenta eliminada con éxito.'
         ]);
     }
 }

@@ -16,9 +16,7 @@ class Evento extends Model
         'id','iglesia_id','nombre','fecha_inicio','fecha_fin','descripcion','imagen'
     ];
 
-    protected $hidden = [
-        'updated_at','created_at'
-    ];
+    protected $hidden = [];
 
 
     public function user(){

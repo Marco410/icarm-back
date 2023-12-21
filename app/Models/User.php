@@ -36,6 +36,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Pais::class);
     }
 
+    public function classroom(){
+        return $this->hasOne(Classroom::class);
+    }
+
     public function firebaseToken(){
         return $this->hasMany(FirebaseToken::class);
     }
