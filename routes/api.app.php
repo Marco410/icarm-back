@@ -22,7 +22,7 @@ Route::group([
     Route::post('classroom/add', 'ClassroomController@add');
     Route::get('classroom/get-kids-teacher', 'ClassroomController@getKidsFromTeacher');
     Route::post('classroom/exit-class', 'ClassroomController@exitFromClass');
-    Route::post('classroom/teachers', 'ClassroomController@getTeachers');
+    Route::get('classroom/teachers', 'ClassroomController@getTeachers');
     
 
     Route::post('pase-lista/add', 'PaseListaController@add');

@@ -13,3 +13,6 @@ Route::post('delete', 'AuthController@deleteAccount');
 Route::post('logout', 'AuthController@logout');
 
 Route::post('refresh', 'AuthController@refresh');
+
+Route::post('forgot', 'AuthController@forgot');
+Route::post('update-password', 'AuthController@updatePassword');

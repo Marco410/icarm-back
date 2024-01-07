@@ -9,6 +9,11 @@ use App\Models\UserSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Mail;
+
+
+use App\Mail\ForgotPassMail;
+
 
 class AuthController extends ApiController
 {
@@ -230,5 +235,63 @@ class AuthController extends ApiController
             'status' => 'Success',
             'message' => 'Cuenta eliminada con éxito.'
         ]);
+    }
+
+    public function forgot(Request $request){
+
+        $user = User::where('email', $request->email)->where('active',1)->first();
+
+        if($user){
+            $pass =  strtoupper(substr($user->apellido_paterno,0,2)). Date('y').'ICARM'.Date('s');
+
+            Mail::to($request->email)->send(new ForgotPassMail($user,$pass));
+
+            $password = hash('sha512', $pass);
+
+            $userPass = User::where('id', $user->id)->update([ 
+                'password' => $password,
+                'pass_update' => 1
+            ]);
+    
+            return $this->ok([
+                'status' => 'Success',
+                'message' => 'El correo de recuperación de contraseña fue enviado con éxito'
+            ]);
+
+        }else{
+            return $this->badRequest([
+                'status' => 'Error', 
+                'message' => 'No pudimos encontrar un usuario con este correo.'
+            ]);
+        }
+
+
+    }
+
+    public function updatePassword(Request $request){
+
+        $user = User::where('id', $request->user_id)->where('active',1)->first();
+
+        if($user){
+
+            $password = hash('sha512', $request->password);
+            $userPass = User::where('id', $user->id)->update([ 
+                'password' => $password,
+                'pass_update' => 0
+            ]);
+    
+            return $this->ok([
+                'status' => 'Success',
+                'message' => 'Contraseña actualizada con éxito.'
+            ]);
+
+        }else{
+            return $this->badRequest([
+                'status' => 'Error', 
+                'message' => 'No pudimos encontrar el usuario.'
+            ]);
+        }
+
+
     }
 }

@@ -17,7 +17,7 @@ class User extends Authenticatable implements JWTSubject
 
 
     protected $fillable = [
-        'nombre', 'apellido_paterno', 'apellido_materno','telefono','email','fecha_nacimiento', 'sexo','password','pais_id','firebase_token','active'
+        'nombre', 'apellido_paterno', 'apellido_materno','telefono','email','fecha_nacimiento', 'sexo','password','pais_id','firebase_token','active','pass_update'
     ];
 
     protected $hidden =[
@@ -37,7 +37,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function classroom(){
-        return $this->hasOne(Classroom::class);
+        return $this->hasMany(Classroom::class)->where('is_in',1)->with('kid');
     }
 
     public function firebaseToken(){

@@ -72,10 +72,19 @@ class ClassroomController extends ApiController
 
 
     public function getTeachers(Request $request){
-        $users = User::role('admin')->get(); 
+        $users = User::role('Maestro Niños')->with('classroom')->get(); 
 
-
-        return $users;
+        if($users){
+            return $this->ok([
+                'status' => 'Success', 
+                'teachers' => $users
+            ]);
+        }else{
+            return $this->badRequest([
+                'status' => 'Error', 
+                'message' => 'No pudimos completar la operación, intente más tarde'
+            ]);
+        }
     }
 
 

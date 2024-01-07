@@ -12,6 +12,12 @@
         <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.1.0/css/buttons.bootstrap4.min.css">
         <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap4.css">
         
+    <style type="text/css" >
+        .image{
+           border-radius: 20px;
+           margin:15px;
+        }
+    </style>
     </head>
     <body>
         <div class="content">
@@ -21,13 +27,21 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="col-12 text-center">
-                                    <h1>Nueva Denuncia</h1>
-                                    <p><strong>Nombre: </strong>{{ $denuncia->nombre }}</p>
-                                    <p><strong>Ciudad: </strong>{{ $denuncia->ciudad }}</p>
-                                    <p><strong>Estado: </strong>{{ $denuncia->estado }}</p>
-                                    <p><strong>País: </strong>{{ $denuncia->pais }}</p>
-                                    <p><strong>Email: </strong>{{ $denuncia->email }}</p>
-                                    <p><strong>Mensaje: </strong>{{ $denuncia->msj }}</p>
+                                    <img src="{{ asset('assets/logo.png') }}" class="image" height="100px" alt=""> <br>
+
+                                    <h1>Recuperación de Contraseña</h1>
+                                    <p><strong>Estimado, {{ $user->nombre }} {{ $user->apellido_paterno }}</strong></p>
+                                    <p>Espero que este mensaje te encuentre bien. Hemos recibido una solicitud para restablecer la contraseña asociada a tu cuenta en nuestra aplicación.</p>
+                                    <h3>Tu nueva contraseña</h3>
+                                    <p>Por ahora hemos preparado esta nueva contraseña temporal con la que podrás acceder, te recomendamos que una vez que accedas, cambies la contraseña por una que te pueda ser familiar.</p>
+
+                                    <p>Tu contraseña: <strong>{{$pass}}</strong></p>
+   
+                                    <p>De parte de todo el equipo de desarrollo de Amor y Restauración Morelia</p>
+                                    <p>Saludos</p>
+
+
+
                                 </div>
                             </div>
                         </div>

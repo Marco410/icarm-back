@@ -7,21 +7,23 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class DenunciaMail extends Mailable
+class ForgotPassMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $subject = "Hay una nueva denuncia desde la app móvil.";
-    public $denuncia;
+    public $subject = "Recuperación de Contraseña";
+    public $user;
+    public $pass;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($denuncia)
+    public function __construct($user,$pass)
     {
-        $this->denuncia = $denuncia;
+        $this->user = $user;
+        $this->pass = $pass;
     }
 
     /**
@@ -31,6 +33,6 @@ class DenunciaMail extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.denuncia');
+        return $this->view('emails.forgot');
     }
 }
