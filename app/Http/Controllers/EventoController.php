@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Evento;
+use App\Models\Interested;
 use App\Models\Iglesia;
 
+use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -20,22 +22,85 @@ class EventoController extends  ApiController
     public function index()
     {
         
-        return $this->ok(Evento::get());
+        return $this->ok([
+            'status' => 'Success', 
+            'data' => [
+                'eventos' => Evento::where('id', '!=', 1)->where('fecha_fin','>',Carbon::now()->subDays(2)->format ('Y-m-d h:i:s'))->orderBy('id','desc')->with(["iglesia"])->withCount('interested')->get()
+            ]
+        ]);
     }
+
+
+    public function get(Request $request)
+    {
+        
+        return $this->ok([
+            'status' => 'Success', 
+            'data' => [
+                'evento' => Evento::where('id', $request->eventoID)->with(["iglesia"])->withCount(['interested'])->get()
+            ]
+        ]);
+    }
+
+    public function getInterested(Request $request)
+    {
+        
+        return $this->ok([
+            'status' => 'Success', 
+            'data' => [
+                'interested' => Interested::where('evento_id', $request->eventoID)->where('user_id', $request->userID)->count() != 0 ? true: false,
+            ]
+        ]);
+    }
+
+
+    public function create_interested(Request $request)
+    {
+
+        $interest = Interested::where('evento_id', $request->eventoID)->where('user_id', $request->userID)->count();
+
+
+        if($interest == 0){
+            
+            $interested = Interested::create([
+                'evento_id' => $request->eventoID,
+                'user_id' => $request->userID,
+            ]);
+        }else{
+            $interested = Interested::where('evento_id', $request->eventoID)->where('user_id', $request->userID)->delete();
+        }
+
+        if($interested){
+            return $this->ok([
+                'status' => 'Success', 
+                'data' => [
+                    'interested' => $interested
+                ]
+            ]);
+        }else{
+            return $this->badRequest([
+                'status' => 'Error', 
+                'message' => 'No pudimos completar la operación, intente más tarde'
+            ]);
+        }
+        
+      
+    }
+
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function createEvent(Request $request)
+    public function create(Request $request)
     {
         
         $errores = array();
         $flagValidation = true;
         $result = (object)[];
    
-        $countEvent = DB::table('eventos')
+     /*    $countEvent = DB::table('evento')
              ->select('id')
              ->where('iglesia_id',$request->iglesia_id)
              ->where('nombre',$request->nombre)
@@ -46,7 +111,7 @@ class EventoController extends  ApiController
         {
             $flagValidation = false;
             array_push($errores,'El evento ya esta registrado');
-        }
+        } */
 
         $iglesiaExist = DB::table('iglesias')
             ->select('id')
@@ -66,26 +131,34 @@ class EventoController extends  ApiController
         
         if($flagValidation){
 
+            if($request->is_favorite == 1) {
+                $eventosUpdate = Evento::where('id','!=',1)->update([
+                    'is_favorite' => 0
+                ]);
+            }
             
             $evento = Evento::create([
                 'iglesia_id' => $request->iglesia_id,
                 'nombre' => $request->nombre,
                 'fecha_inicio' => $request->fecha_inicio,
                 'fecha_fin' => $request->fecha_fin,
-                'descripcion' => $request->descripcion
+                'descripcion' => $request->descripcion,
+                'direccion' => $request->direccion,
+                'is_favorite' => $request->is_favorite,
+                'can_register' => $request->can_register,
             ]);
 
-            
-                $nameFoto = $this->storeFoto($request,$evento->id);
-                $evento->imagen = $nameFoto;
+                $nameFoto = $this->storeFoto($request,$evento->id,'img_vertical');
+                $evento->img_vertical = $nameFoto;
+
+                $nameFotoH = $this->storeFoto($request,$evento->id,'img_horizontal');
+                $evento->img_horizontal = $nameFotoH;
                 $evento->save();
-            
-            
-            $result = (object) [
-                'type' => 'success',
-                'message' => 'Evento registrado con exito',
+
+            return $this->ok([
+                'status' => 'Success', 
                 'data' => $evento
-            ];
+            ]);
         }
         else{
             $result = (object) [
@@ -172,12 +245,13 @@ class EventoController extends  ApiController
         //
     }
 
-    public function storeFoto($request,$id)
+    public function storeFoto($request,$id,$nameKey)
     {
 
-        if ($request->hasFile('imagen')) {
-            $file = $request->file('imagen');
-            $name = $file->getClientOriginalName();
+        if ($request->hasFile($nameKey)) {
+            $file = $request->file($nameKey);
+            $nameWithExtension = $file->getClientOriginalName();
+            $name = explode('.', $nameWithExtension)[0];
             $nameResult = $this->generateNameFile($name);
 
            /*  request()->file("imagen")->storeAs('public', 'marcas/' . $nameResult); */
@@ -192,8 +266,7 @@ class EventoController extends  ApiController
 
            $path = $ruta ."/".$nameResult;
 
-            Image::make($request->file('imagen'))
-                ->resize(768,449)->save($path);
+            Image::make($request->file($nameKey))->encode('jpg', 70)->save($path);
 
             return $nameResult;
         } else {
@@ -209,7 +282,7 @@ class EventoController extends  ApiController
         $link = preg_replace("/[^ A-Za-z0-9_.-]/", '', $link);
         $link = str_replace(' ', '-', $link);
 
-        return $link;
+        return $link . '.jpg';
     }
 
     public function deleteAccents($cadena)

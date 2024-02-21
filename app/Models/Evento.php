@@ -13,7 +13,7 @@ class Evento extends Model
 
 
     protected $fillable = [
-        'id','iglesia_id','nombre','fecha_inicio','fecha_fin','descripcion','imagen'
+        'id','iglesia_id','nombre','fecha_inicio','fecha_fin','descripcion','direccion','img_vertical','img_horizontal','is_favorite','can_register'
     ];
 
     protected $hidden = [];
@@ -21,5 +21,17 @@ class Evento extends Model
 
     public function user(){
         return $this->belongTo(User::class);
+    }
+
+    public function iglesia(){
+        return $this->hasOne(Iglesia::class, 'id', 'iglesia_id');
+    }
+
+    public function user_interested(){
+        return $this->hasOne(Interested::class, 'id','user_id');
+    }
+
+    public function interested(){
+        return $this->hasMany(Interested::class);
     }
 }

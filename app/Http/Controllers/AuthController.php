@@ -209,14 +209,23 @@ class AuthController extends ApiController
 
     public function updateFirebase(Request $request){
 
-        $fire = FirebaseToken::where('token', $request->firebase_token)->first();
+        $fire = FirebaseToken::where('token', $request->firebase_token)->orderBy('id', 'desc')->first();
         $firebase = "";
 
-        if(!$fire){
+
+        if($fire->user_id != $request->userId){
             $firebase = FirebaseToken::create([
                 'user_id' => $request->userId,
                 'token' => $request->firebase_token
             ]);
+        }else{
+            if(!$fire){
+                $firebase = FirebaseToken::create([
+                    'user_id' => $request->userId,
+                    'token' => $request->firebase_token
+                ]);
+            }
+
         }
 
         return $this->ok([

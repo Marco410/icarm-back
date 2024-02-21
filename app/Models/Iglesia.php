@@ -10,9 +10,8 @@ class Iglesia extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nombre','web','calle','numero','colonia','cp','ciudad','pais','lat','lng','telefono','facebook','instagram','youtube','pastores','horarios','mision','historia'
+        'nombre','web','calle','numero','colonia','cp','ciudad','estado','pais','lat','lng','telefono','facebook','instagram','youtube','pastores','horarios','mision','historia'
     ];
-    //kjanscjnc
 
     public function user(){
         return $this->belongsTo(User::class);

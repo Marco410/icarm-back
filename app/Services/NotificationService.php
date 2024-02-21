@@ -39,6 +39,7 @@ class NotificationService {
         $settings = Settings::where('name','token_service_firebase')->first(); 
         $response = Http::withToken($settings->value)->post('https://fcm.googleapis.com/fcm/send', [
             'to' => $user_toke_firebase,
+            "priority" => "high",
             'notification' => [
                 "title" => $title,
                 "body" => $body,
