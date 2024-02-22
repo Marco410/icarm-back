@@ -37,11 +37,13 @@ Route::group([
     Route::get('eventos', 'EventoController@index');
     Route::get('evento', 'EventoController@get');
     Route::post('evento/create', 'EventoController@create');
+    Route::post('evento/update', 'EventoController@update');
     Route::post('evento/interested', 'EventoController@create_interested');
     Route::get('evento/get/interested', 'EventoController@getInterested');
 
 
     Route::post('encontrado/create', 'EncontradoController@store');
+  
     Route::get('encontrado/invitados', 'EncontradoController@getInvites');
     Route::get('encontrado/invitado', 'EncontradoController@getEncontrado');
 

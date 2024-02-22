@@ -170,6 +170,47 @@ class EventoController extends  ApiController
         return $this->ok(json_decode(json_encode($result)));
     }
 
+    public function update(Request $request)
+    {
+        
+        $errores = array();
+        $flagValidation = true;
+        $result = (object)[];
+
+        if($flagValidation){
+
+            if($request->is_favorite == 1) {
+                $eventosUpdate = Evento::where('id','!=',1)->update([
+                    'is_favorite' => 0
+                ]);
+            }
+            
+            $evento = Evento::where('id',$request->evento_id)->update([
+                'iglesia_id' => $request->iglesia_id,
+                'nombre' => $request->nombre,
+                'fecha_inicio' => $request->fecha_inicio,
+                'fecha_fin' => $request->fecha_fin,
+                'descripcion' => $request->descripcion,
+                'direccion' => $request->direccion,
+                'is_favorite' => $request->is_favorite,
+                'can_register' => $request->can_register,
+            ]);
+
+            return $this->ok([
+                'status' => 'Success', 
+                'data' => $evento
+            ]);
+        }
+        else{
+            $result = (object) [
+                'type' => 'error',
+                'message' => 'Hay errores en el registro',
+                'data' => $errores
+            ];
+        }
+        return $this->ok(json_decode(json_encode($result)));
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -201,37 +242,6 @@ class EventoController extends  ApiController
     public function edit($id)
     {
         //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request)
-    {
-        //FALTA VALIDAR
-        
-        $imgeliminar = "";
-        $evento = Evento::find($request->id);
-        $imgeliminar = $evento->imagen;
-        $evento->iglesia_id = $request->iglesia_id;
-        $evento->nombre = $request->nombre;
-        $evento->fecha_inicio = $request->fecha_inicio;
-        $evento->fecha_fin = $request->fecha_fin;
-        $evento->descripcion = $request->descripcion;
-
-        $path_file_delete = public_path() . '/eventos/' . $request->id . "/".$imgeliminar;
-        unlink($path_file_delete);
-        $nameFoto = $this->storeFoto($request,$request->id);
-        $evento->imagen = $nameFoto;
-
-        $evento->save();
-        
-
-        return $this->ok($evento);
     }
 
     /**

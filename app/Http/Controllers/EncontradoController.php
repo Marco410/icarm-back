@@ -90,11 +90,10 @@ class EncontradoController extends ApiController
         }
     }
 
-
     public function getInvites(Request $request){
 
 
-        $invitados = Encontrado::where('user_invited_id',$request->user_id)->get();
+        $invitados = Encontrado::where('user_invited_id',$request->user_id)->where('evento_id',$request->evento_id)->get();
         
         if($invitados){
             return $this->ok([
