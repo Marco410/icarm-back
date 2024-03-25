@@ -39,11 +39,8 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:60,1',
-            ///ESTE ES EL QUE ESTÁ HECIENDO COSAS LOCAS
+            /* 'throttle:60,1', */
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            //'jwt.auth',
-            //'jwt.refresh'
         ],
 
         'swagger' => [

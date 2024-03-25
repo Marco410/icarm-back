@@ -25,7 +25,7 @@ class EventoController extends  ApiController
         return $this->ok([
             'status' => 'Success', 
             'data' => [
-                'eventos' => Evento::where('id', '!=', 1)->where('fecha_fin','>',Carbon::now()->subDays(2)->format ('Y-m-d h:i:s'))->orderBy('id','desc')->with(["iglesia"])->withCount('interested')->get()
+                'eventos' => Evento::where('id', '!=', 1)->where('is_public',1)->where('fecha_fin','>',Carbon::now()->subDays(2)->format ('Y-m-d h:i:s'))->orderBy('fecha_inicio','asc')->with(["iglesia"])->withCount('interested')->get()
             ]
         ]);
     }

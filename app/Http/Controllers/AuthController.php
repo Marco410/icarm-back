@@ -143,6 +143,7 @@ class AuthController extends ApiController
             'password' => $password,
             'telefono' => $request->telefono,
             'sexo' => $request->sexo,
+            'sexo_id' => $request->sexo_id,
             'pais_id' => $request->pais_id,
             'active' => 1
         ])->assignRole('Usuario');
@@ -212,21 +213,29 @@ class AuthController extends ApiController
         $fire = FirebaseToken::where('token', $request->firebase_token)->orderBy('id', 'desc')->first();
         $firebase = "";
 
-
-        if($fire->user_id != $request->userId){
-            $firebase = FirebaseToken::create([
-                'user_id' => $request->userId,
-                'token' => $request->firebase_token
-            ]);
-        }else{
-            if(!$fire){
+        if($fire){
+            if($fire->user_id != $request->userId){
                 $firebase = FirebaseToken::create([
                     'user_id' => $request->userId,
                     'token' => $request->firebase_token
                 ]);
+            }else{
+                if(!$fire){
+                    $firebase = FirebaseToken::create([
+                        'user_id' => $request->userId,
+                        'token' => $request->firebase_token
+                    ]);
+                }
+    
             }
 
+        }else{
+            $firebase = FirebaseToken::create([
+                'user_id' => $request->userId,
+                'token' => $request->firebase_token
+            ]);
         }
+
 
         return $this->ok([
             'status' => 'Success',

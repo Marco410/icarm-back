@@ -13,7 +13,13 @@ Route::group([
     // UserController
     Route::get('users', 'UserController@index');
     Route::post('users/send-noti', 'UserController@sendNotificationToUSer');
-
+    Route::get('users/all', 'UserController@getAll');
+    Route::get('users/detail', 'UserController@getUser');
+    Route::put('users/update', 'UserController@updateUser');
+    Route::get('users/roles', 'UserController@getRoles');
+    Route::post('users/update-foto-perfil', 'UserController@updateFotoPerfil');
+    Route::post('users/delete-foto-perfil', 'UserController@deleteFotoPerfil');
+    
     Route::post('kids/add', 'KidsController@add');
     Route::get('kids/get', 'KidsController@get');
     Route::get('kids/delete', 'KidsController@delete');
