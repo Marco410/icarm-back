@@ -11,7 +11,7 @@ class PaseLista extends Model
 
     protected $table = 'paselista';
     protected $fillable = [
-        'id_persona','evento','fh',
+        'id_persona','evento','fh','evento_id'
     ];
 
     

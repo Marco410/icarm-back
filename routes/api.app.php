@@ -33,6 +33,7 @@ Route::group([
 
     Route::post('pase-lista/add', 'PaseListaController@add');
     Route::get('pase-lista/get-user', 'PaseListaController@getUser');
+    Route::put('pase-lista/update-user', 'PaseListaController@updateUser');
 
 
     ///ADMIN

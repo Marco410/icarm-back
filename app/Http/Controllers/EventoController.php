@@ -19,15 +19,27 @@ class EventoController extends  ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+
+
+        if($request->isAdmin == "admin"){
+            return $this->ok([
+                'status' => 'Success', 
+                'data' => [
+                    'eventos' => Evento::orderBy('fecha_inicio','asc')->with(["iglesia"])->get()
+                ]
+            ]);
+
+        }else{
+            return $this->ok([
+                'status' => 'Success', 
+                'data' => [
+                    'eventos' => Evento::where('id', '!=', 1)->where('is_public',1)->where('fecha_fin','>',Carbon::now()->subDays(1)->format ('Y-m-d h:i:s'))->orderBy('fecha_inicio','asc')->with(["iglesia"])->withCount('interested')->get()
+                ]
+            ]);
+        }
         
-        return $this->ok([
-            'status' => 'Success', 
-            'data' => [
-                'eventos' => Evento::where('id', '!=', 1)->where('is_public',1)->where('fecha_fin','>',Carbon::now()->subDays(2)->format ('Y-m-d h:i:s'))->orderBy('fecha_inicio','asc')->with(["iglesia"])->withCount('interested')->get()
-            ]
-        ]);
     }
 
 
@@ -123,10 +135,12 @@ class EventoController extends  ApiController
             array_push($errores,'La iglesia que esta intentanto ingresar no existe');
         }
 
-        if($request->fecha_inicio > $request ->fecha_fin)
-        {
-            $flagValidation = false;
-            array_push($errores,'La fecha de inicio es mayor que la final');
+        if($request->fecha_fin){
+            if($request->fecha_inicio > $request ->fecha_fin)
+            {
+                $flagValidation = false;
+                array_push($errores,'La fecha de inicio es mayor que la final');
+            }
         }
         
         if($flagValidation){
@@ -146,6 +160,7 @@ class EventoController extends  ApiController
                 'direccion' => $request->direccion,
                 'is_favorite' => $request->is_favorite,
                 'can_register' => $request->can_register,
+                'is_public' => $request->is_public,
             ]);
 
                 $nameFoto = $this->storeFoto($request,$evento->id,'img_vertical');
@@ -194,6 +209,7 @@ class EventoController extends  ApiController
                 'direccion' => $request->direccion,
                 'is_favorite' => $request->is_favorite,
                 'can_register' => $request->can_register,
+                'is_public' => $request->is_public,
             ]);
 
             return $this->ok([
