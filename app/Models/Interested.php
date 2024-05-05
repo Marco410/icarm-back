@@ -19,7 +19,7 @@ class Interested extends Model
     protected $hidden = [];
 
    public function user(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->with('sexo');
     }
 
     public function evento(){

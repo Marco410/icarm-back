@@ -19,11 +19,11 @@ class Encontrado extends Model
     protected $hidden = [];
 
     public function user(){
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->hasOne(User::class, 'id', 'user_id')->with('sexo');
     }
 
     public function userInvited(){
-        return $this->hasOne(User::class, 'id', 'user_invited_id');
+        return $this->hasOne(User::class, 'id', 'user_invited_id')->with('sexo');
     }
 
     public function evento(){

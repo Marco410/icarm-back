@@ -20,7 +20,7 @@ class Evento extends Model
 
 
     public function user(){
-        return $this->belongTo(User::class);
+        return $this->belongTo(User::class)->with('sexo');
     }
 
     public function iglesia(){

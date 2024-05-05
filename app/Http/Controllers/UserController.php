@@ -100,9 +100,9 @@ class UserController extends ApiController
     public function getAll(Request $request)
     {
         if($request->role){
-            $users = User::where('email', '!=','')->where(DB::raw("CONCAT(`nombre`, ' ', `apellido_paterno`,' ',`apellido_materno`)"), 'like', '%' . $request->nombre . '%')->with(['iglesia','roles','pais','sexo'])->role($request->role)->get();
+            $users = User::where(DB::raw("CONCAT(`nombre`, ' ', `apellido_paterno`,' ',`apellido_materno`)"), 'like', '%' . $request->nombre . '%')->with(['iglesia','roles','pais','sexo'])->role($request->role)->get();
         }else{
-            $users = User::where('email', '!=','')->where(DB::raw("CONCAT(`nombre`, ' ', `apellido_paterno`,' ',`apellido_materno`)"), 'like', '%' . $request->nombre . '%')->with(['iglesia','roles','pais','sexo'])->get();
+            $users = User::where(DB::raw("CONCAT(`nombre`, ' ', `apellido_paterno`,' ',`apellido_materno`)"), 'like', '%' . $request->nombre . '%')->with(['iglesia','roles','pais','sexo'])->get();
         }
 
         return $this->ok([
@@ -185,7 +185,7 @@ class UserController extends ApiController
             unlink($path);
 
             $userU = User::where('id', $user->id)->update([ 
-                'foto_perfil' => ""
+                'foto_perfil' => null
             ]);
         }
 

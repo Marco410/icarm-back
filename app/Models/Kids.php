@@ -25,7 +25,11 @@ class Kids extends Model
     }
 
     public function user(){
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->hasOne(User::class, 'id', 'user_id')->with('sexo');
+    }
+
+    public function tutors(){
+        return $this->hasMany(KidsHasTutor::class, 'kid_id', 'id')->with('user');
     }
     
 }

@@ -22,8 +22,12 @@ Route::group([
     
     Route::post('kids/add', 'KidsController@add');
     Route::get('kids/get', 'KidsController@get');
+    Route::get('kids/get-tutors', 'KidsController@getTutorsByKid');
     Route::get('kids/delete', 'KidsController@delete');
     Route::put('kids/update', 'KidsController@update');
+    Route::post('kids/generate-code', 'KidsController@generate_code');
+    Route::post('kids/invalidar-code', 'KidsController@invalidar_code');
+    Route::post('kids/validar-code', 'KidsController@validar_code');
     
     Route::post('classroom/add', 'ClassroomController@add');
     Route::get('classroom/get-kids-teacher', 'ClassroomController@getKidsFromTeacher');

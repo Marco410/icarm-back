@@ -5,15 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Classroom extends Model
+class KidsCode extends Model
 {
     use HasFactory;
 
 
-    protected $table = 'classroom';
-    
+    protected $table = 'kids_code';
     protected $fillable = [
-        'user_id','kid_id','is_in'
+        'kid_id','user_id','code','is_valid'
     ];
 
     protected $hidden = [
@@ -21,11 +20,11 @@ class Classroom extends Model
     ];
 
     public function user(){
-        return $this->belongsToMany(User::class)->with('sexo');
+        return $this->hasOne(User::class, 'id', 'user_id')->with('sexo');
     }
 
     public function kid(){
-        return $this->hasOne(Kids::class, 'id', 'kid_id')->with(['user','tutors']);
+        return $this->hasOne(Kids::class, 'id', 'kid_id');
     }
     
 }
