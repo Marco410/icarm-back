@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\UserContext;
 use App\Models\ViewUserRelationshipWithClient;
 use App\Models\User;
+use App\Models\Ministerio;
+use App\Models\UserHasMinisterios;
 use App\Models\FirebaseToken;
 use App\Services\NotificationService;
 use Illuminate\Support\Facades\DB;
@@ -25,11 +27,8 @@ class UserController extends ApiController
         return $this->ok(User::with('iglesia')->get());
     }
 
-    public function getUser(Request $request)
-    {
-
-        $user = User::where('id', $request->userID)->with(['iglesia','roles','pais','sexo'])->first();
-
+    public function getUser(Request $request){
+        $user = User::where('id', $request->userID)->with(['iglesia','roles','pais','sexo','ministerios'])->first();
         return $this->ok([
             'status' => 'Success', 
             'user' => $user
@@ -38,16 +37,21 @@ class UserController extends ApiController
     }
 
 
-    public function getRoles(Request $request)
-    {
-
+    public function getRoles(Request $request){
         $roles = Role::all();
-
         return $this->ok([
             'status' => 'Success', 
             'roles' => $roles
         ]);
 
+    }
+
+    public function getMinisterios(Request $request){
+        $ministerios = Ministerio::get();
+        return $this->ok([
+            'status' => 'Success', 
+            'ministerios' => $ministerios
+        ]);
     }
 
     public function updateUser(Request $request)
@@ -62,7 +66,7 @@ class UserController extends ApiController
             ]);
         }
 
-        $user = User::where('id', $request->userID)->with(['iglesia','roles','pais','sexo'])->first();
+        $user = User::where('id', $request->userID)->with(['iglesia','roles','pais','sexo','ministerios'])->first();
 
 
         $userU = User::where('id', $request->userID)->update([ 
@@ -85,7 +89,16 @@ class UserController extends ApiController
             $user->assignRole($role);
         }
 
-     
+        foreach($user->ministerios as $mini){
+            $ministerio = UserHasMinisterios::where('user_id', $user->id)->where('ministerio_id',$mini->ministerio->id)->delete();
+        }
+
+        foreach($request->ministerios as $min){
+            $ministerio = UserHasMinisterios::create([
+                'user_id' => $user->id,
+                'ministerio_id' => $min
+            ]);
+        }
 
         return $this->ok([
             'status' => 'Success', 
@@ -100,9 +113,9 @@ class UserController extends ApiController
     public function getAll(Request $request)
     {
         if($request->role){
-            $users = User::where(DB::raw("CONCAT(`nombre`, ' ', `apellido_paterno`,' ',`apellido_materno`)"), 'like', '%' . $request->nombre . '%')->with(['iglesia','roles','pais','sexo'])->role($request->role)->get();
+            $users = User::where(DB::raw("CONCAT(`nombre`, ' ', `apellido_paterno`,' ',`apellido_materno`)"), 'like', '%' . $request->nombre . '%')->with(['iglesia','roles','pais','sexo','ministerios'])->role($request->role)->get();
         }else{
-            $users = User::where(DB::raw("CONCAT(`nombre`, ' ', `apellido_paterno`,' ',`apellido_materno`)"), 'like', '%' . $request->nombre . '%')->with(['iglesia','roles','pais','sexo'])->get();
+            $users = User::where(DB::raw("CONCAT(`nombre`, ' ', `apellido_paterno`,' ',`apellido_materno`)"), 'like', '%' . $request->nombre . '%')->with(['iglesia','roles','pais','sexo','ministerios'])->get();
         }
 
         return $this->ok([
@@ -234,7 +247,7 @@ class UserController extends ApiController
         $link = preg_replace("/[^ A-Za-z0-9_.-]/", '', $link);
         $link = str_replace(' ', '-', $link);
 
-        return $link . '.jpg';
+        return 'img' . $link . date('s') . '.jpg';
     }
 
     public function deleteAccents($cadena)

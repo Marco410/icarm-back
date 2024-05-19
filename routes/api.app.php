@@ -17,6 +17,7 @@ Route::group([
     Route::get('users/detail', 'UserController@getUser');
     Route::put('users/update', 'UserController@updateUser');
     Route::get('users/roles', 'UserController@getRoles');
+    Route::get('users/ministerios', 'UserController@getMinisterios');
     Route::post('users/update-foto-perfil', 'UserController@updateFotoPerfil');
     Route::post('users/delete-foto-perfil', 'UserController@deleteFotoPerfil');
     

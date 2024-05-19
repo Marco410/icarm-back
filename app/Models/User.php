@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\UserHasMinisterios;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -50,6 +51,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function firebaseToken(){
         return $this->hasMany(FirebaseToken::class);
+    }
+
+    public function ministerios(){
+        return $this->hasMany(UserHasMinisterios::class)->with('ministerio');
     }
     
     /**
