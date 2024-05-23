@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Evento;
 use App\Models\PaseLista;
 use App\Models\Maestro;
+use App\Models\UserHasMinisterios;
 
 
 class PaseListaController extends ApiController
@@ -18,8 +19,16 @@ class PaseListaController extends ApiController
     }
 
     public function getUser(Request $request){
-        $user = User::where('id',$request->user_id)->with(['maestro_vision','iglesia','roles','pais','sexo','ministerios'])->where('active',1)->first();
 
+
+        if($request->evento_id){
+            $user = User::where('id',$request->user_id)->with(['maestro_vision','iglesia','roles','pais','sexo','ministerios','pago' => function($q) use($request){
+                $q->where('pagos.evento_id', $request->evento_id);
+            } ])->where('active',1)->first();
+        }else{
+            $user = User::where('id',$request->user_id)->with(['maestro_vision','iglesia','roles','pais','sexo','ministerios'])->where('active',1)->first();
+        }
+        
         if($user){
             return $this->ok([
                 'status' => 'Success', 
@@ -79,17 +88,20 @@ class PaseListaController extends ApiController
     public function updateUser(Request $request)
     {
 
-        $userU = User::where('id', $request->userID)->update([ 
+        $user = User::where('id', $request->userID)->with(['iglesia','roles','pais','sexo','ministerios'])->first();
+
+        $userU = User::where('id', $user->id)->update([ 
             'nombre' => $request->nombre,
             'apellido_paterno' => $request->apellido_paterno,
             'apellido_materno' => $request->apellido_materno,
             'fecha_nacimiento' => $request->fecha_nacimiento,
             'telefono' => $request->telefono,
             'asignacion' => $request->asignacion,
+            'epastores' => $request->epastores,
             'sexo_id' => 0
         ]);
 
-        $maestroUser = Maestro::where('user_id', $request->userID)->first();
+        $maestroUser = Maestro::where('user_id', $user->id)->first();
 
         if($maestroUser){
             $maestroUpdate = $maestroUser->update([
@@ -97,8 +109,19 @@ class PaseListaController extends ApiController
             ]);
         }else{
             $maestroUser = Maestro::create([
-                'user_id' => $request->userID,
+                'user_id' => $user->id,
                 'maestro_id' => $request->maestro_id,
+            ]);
+        }
+
+        foreach($user->ministerios as $mini){
+            $ministerio = UserHasMinisterios::where('user_id', $user->id)->where('ministerio_id',$mini->ministerio->id)->delete();
+        }
+
+        foreach($request->ministerios as $min){
+            $ministerio = UserHasMinisterios::create([
+                'user_id' => $user->id,
+                'ministerio_id' => $min
             ]);
         }
 

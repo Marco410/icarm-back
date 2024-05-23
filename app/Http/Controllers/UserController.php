@@ -69,7 +69,7 @@ class UserController extends ApiController
         $user = User::where('id', $request->userID)->with(['iglesia','roles','pais','sexo','ministerios'])->first();
 
 
-        $userU = User::where('id', $request->userID)->update([ 
+        $userU = User::where('id', $request->userID)->update([
             'nombre' => $request->nombre,
             'apellido_paterno' => $request->apellido_paterno,
             'apellido_materno' => $request->apellido_materno,
