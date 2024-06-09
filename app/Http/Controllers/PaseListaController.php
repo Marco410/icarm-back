@@ -49,15 +49,23 @@ class PaseListaController extends ApiController
         $user = $request->user_id;
 
         $evento = Evento::where('id',$request->evento_id)->first();
-
+        $dateNow = date("Y-m-d");
         $datetime = date("Y-m-d H:i:s");
-
         $user = User::where('id',$request->user_id)->first();
 
         if(!$user){
             return $this->badRequest([
                 'status' => 'Error', 
                 'message' => 'Usuario no encontrado'
+            ]);
+        }
+
+        $paseLista = PaseLista::where('id_persona', $user->id)->where('evento_id',$evento->id)->where('created_at','>=',$dateNow)->orderBy('created_at','desc')->first();
+
+        if($paseLista){
+            return $this->badRequest([
+                'status' => 'Error', 
+                'message' => 'El usuario ya paso lista.'
             ]);
         }
 

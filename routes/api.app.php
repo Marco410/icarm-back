@@ -42,6 +42,11 @@ Route::group([
     
     Route::post('pago/create', 'PagoController@create');
 
+    //BETELES
+    Route::get('betel/get', 'BetelController@getAll');
+    Route::post('betel/create', 'BetelController@create');
+    Route::post('betel/edit', 'BetelController@update');
+
     ///ADMIN
 
     Route::get('iglesias', 'IglesiaController@getAll');
