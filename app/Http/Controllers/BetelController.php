@@ -100,6 +100,40 @@ class BetelController extends ApiController
         return $this->ok(json_decode(json_encode($result)));
     }
 
+    public function delete(Request $request)
+    {
+        
+        $errores = array();
+        $flagValidation = true;
+        $result = (object)[];
+
+        if($flagValidation){
+            $betel = Betel::where('id',$request->betel_id)->first();
+            
+            if($betel->img != null){
+
+                $path = public_path() . '/beteles/'.$betel->img;
+    
+                unlink($path);
+            }
+            
+            $betel = Betel::where('id',$betel->id)->delete();
+
+            return $this->ok([
+                'status' => 'Success', 
+            ]);
+        }
+        else{
+            $result = (object) [
+                'type' => 'error',
+                'message' => 'No se pudo eliminar el betel.',
+                'data' => $errores
+            ];
+        }
+        return $this->ok(json_decode(json_encode($result)));
+    }
+
+
 
     public function storeFoto($request,$nameKey)
     {

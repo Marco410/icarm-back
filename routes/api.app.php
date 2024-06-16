@@ -46,6 +46,7 @@ Route::group([
     Route::get('betel/get', 'BetelController@getAll');
     Route::post('betel/create', 'BetelController@create');
     Route::post('betel/edit', 'BetelController@update');
+    Route::post('betel/delete', 'BetelController@delete');
 
     ///ADMIN
 
