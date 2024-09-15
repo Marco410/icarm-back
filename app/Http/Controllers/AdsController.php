@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Ads;
+use Intervention\Image\Facades\Image;
 
 class AdsController extends ApiController
 {
