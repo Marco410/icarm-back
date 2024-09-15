@@ -55,6 +55,7 @@ Route::group([
     //ADS
     Route::get('ads', 'AdsController@getAll');
     Route::post('ads/create', 'AdsController@create');
+    Route::post('ads/delete', 'AdsController@delete');
     
     //Modules
     Route::get('modules', 'ModuleController@getAll');

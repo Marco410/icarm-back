@@ -57,6 +57,33 @@ class AdsController extends ApiController
        
     }
 
+    public function delete(Request $request){
+
+        $ad = Ads::where('id',$request->ad_id)->first();
+
+            if($ad->img != null){
+                $path = public_path() . '/ads/' . $ad->img;
+                unlink($path);
+            }
+
+        $ad->delete();
+
+        if($ad){
+            return $this->ok([
+                'status' => 'Success', 
+                'data' => [
+                    'ad' => $ad,
+                ]
+            ]);
+        }else{
+            return $this->badRequest([
+                'status' => 'Error', 
+                'message' => 'No pudimos completar la operación, intente más tarde'
+            ]);
+        }
+       
+    }
+
     public function storeFoto($request,$id)
     {
         if ($request->hasFile('img')) {
