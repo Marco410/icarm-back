@@ -65,7 +65,7 @@ class AdsController extends ApiController
             $name = explode('.', $nameWithExtension)[0];
             $nameResult = $this->generateNameFile($name);
 
-            $ruta = public_path() . '/ads/' . $id;
+            $ruta = public_path() . '/ads';
 
             if (!file_exists($ruta)) {
                 mkdir($ruta, 0775, true);
