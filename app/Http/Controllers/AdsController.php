@@ -79,4 +79,24 @@ class AdsController extends ApiController
         }
     }
 
+    public function generateNameFile($value)
+    {
+        $link = html_entity_decode($value);
+        $link = $this->deleteAccents($link);
+        $link = strtolower($link); 
+        $link = preg_replace("/[^ A-Za-z0-9_.-]/", '', $link);
+        $link = str_replace(' ', '-', $link);
+
+        return $link . '.jpg';
+    }
+
+    public function deleteAccents($cadena)
+    {
+        $originales = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿ';
+        $modificadas = 'aaaaaaaceeeeiiiidnoooooouuuuybsaaaaaaaceeeeiiiidnoooooouuuyyby';
+        $cadena = utf8_decode($cadena);
+        $cadena = strtr($cadena, utf8_decode($originales), $modificadas);
+        return utf8_encode($cadena);
+    }
+
 }
