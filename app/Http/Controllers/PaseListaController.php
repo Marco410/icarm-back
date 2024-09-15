@@ -60,6 +60,16 @@ class PaseListaController extends ApiController
             ]);
         }
 
+        if($evento->id == 3){
+            if($user->seminario_pass == 0){
+                return $this->badRequest([
+                    'status' => 'Error', 
+                    'message' => 'Ponte en contacto con el lider de este herman@, al parecer no tiene permitido entrar al seminario.'
+                ]);
+            }
+           
+        }
+
         $paseLista = PaseLista::where('id_persona', $user->id)->where('evento_id',$evento->id)->where('created_at','>=',$dateNow)->orderBy('created_at','desc')->first();
 
         if($paseLista){

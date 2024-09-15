@@ -273,7 +273,7 @@ class AuthController extends ApiController
     
             return $this->ok([
                 'status' => 'Success',
-                'message' => 'El correo de recuperación de contraseña fue enviado con éxito'
+                'message' => 'El correo de recuperación de contraseña fue enviado con éxito. Por favor revisa tu carpeta de SPAM.'
             ]);
 
         }else{

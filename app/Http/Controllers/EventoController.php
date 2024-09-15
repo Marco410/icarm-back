@@ -31,7 +31,15 @@ class EventoController extends  ApiController
                 ]
             ]);
 
-        }else{
+        }elseif($request->isAdmin == "admin_list"){
+            return $this->ok([
+                'status' => 'Success', 
+                'data' => [
+                    'eventos' => Evento::orderBy('fecha_inicio','desc')->with(["iglesia"])->get()
+                ]
+            ]);
+
+        } else{
             return $this->ok([
                 'status' => 'Success', 
                 'data' => [
@@ -279,10 +287,6 @@ class EventoController extends  ApiController
             $nameWithExtension = $file->getClientOriginalName();
             $name = explode('.', $nameWithExtension)[0];
             $nameResult = $this->generateNameFile($name);
-
-           /*  request()->file("imagen")->storeAs('public', 'marcas/' . $nameResult); */
-
-           //$ruta = storage_path() .'/app/public/eventos/'.$request->id;
 
            $ruta = public_path() . '/eventos/' . $id;
 

@@ -52,6 +52,13 @@ Route::group([
 
     Route::get('iglesias', 'IglesiaController@getAll');
 
+    //ADS
+    Route::get('ads', 'AdsController@getAll');
+    Route::post('ads/create', 'AdsController@create');
+    
+    //Modules
+    Route::get('modules', 'ModuleController@getAll');
+
     //Eventos
     Route::get('eventos', 'EventoController@index');
     Route::get('evento', 'EventoController@get');
