@@ -180,8 +180,7 @@ class UserController extends ApiController
         $userU = User::where('id', $user->id)->update([ 
             'foto_perfil' => $nameFoto
         ]);
-
-
+        
         return $this->ok([
             'status' => 'Success', 
             'message' => 'Foto de perfil actualizada con éxito.',
@@ -194,15 +193,13 @@ class UserController extends ApiController
         $user = User::where('id', $request->userID)->first();
 
         if($user->foto_perfil != null){
-            $path = public_path() . '/usuarios/' . $user->id.'/'.$user->foto_perfil;
+            $path = public_path() . '/usuarios/' . $user->id.'.jpg';
             unlink($path);
 
             $userU = User::where('id', $user->id)->update([ 
                 'foto_perfil' => null
             ]);
         }
-
-        
 
         return $this->ok([
             'status' => 'Success', 
@@ -212,50 +209,24 @@ class UserController extends ApiController
 
     public function storeFoto($request,$id,$nameKey)
     {
-
         if ($request->hasFile($nameKey)) {
             $file = $request->file($nameKey);
             $nameWithExtension = $file->getClientOriginalName();
             $name = explode('.', $nameWithExtension)[0];
-            $nameResult = $this->generateNameFile($name);
 
-           /*  request()->file("imagen")->storeAs('public', 'marcas/' . $nameResult); */
-
-           //$ruta = storage_path() .'/app/public/eventos/'.$request->id;
-
-           $ruta = public_path() . '/usuarios/' . $id;
+           $ruta = public_path() . '/usuarios';
 
             if (!file_exists($ruta)) {
                 mkdir($ruta, 0775, true);
             }
 
-           $path = $ruta ."/".$nameResult;
+           $path = $ruta ."/".$id.".jpg";
 
             Image::make($request->file($nameKey))->encode('jpg', 50)->save($path);
 
-            return $nameResult;
+            return $id.".jpg";
         } else {
             return null;
         }
-    }
-
-    public function generateNameFile($value)
-    {
-        $link = html_entity_decode($value);
-        $link = $this->deleteAccents($link);
-        $link = strtolower($link); 
-        $link = preg_replace("/[^ A-Za-z0-9_.-]/", '', $link);
-        $link = str_replace(' ', '-', $link);
-
-        return 'img' . $link . date('s') . '.jpg';
-    }
-
-    public function deleteAccents($cadena)
-    {
-        $originales = 'ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿ';
-        $modificadas = 'aaaaaaaceeeeiiiidnoooooouuuuybsaaaaaaaceeeeiiiidnoooooouuuyyby';
-        $cadena = utf8_decode($cadena);
-        $cadena = strtr($cadena, utf8_decode($originales), $modificadas);
-        return utf8_encode($cadena);
     }
 }
