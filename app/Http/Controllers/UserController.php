@@ -169,7 +169,7 @@ class UserController extends ApiController
         $user = User::where('id', $request->userID)->first();
 
         if($user->foto_perfil != null){
-            $path = public_path() . '/usuarios/' . $user->id.'.jpg';
+            $path = public_path() . '/usuarios/' . $user->foto_perfil;
             unlink($path);
         }
 
@@ -191,7 +191,7 @@ class UserController extends ApiController
         $user = User::where('id', $request->userID)->first();
 
         if($user->foto_perfil != null){
-            $path = public_path() . '/usuarios/' . $user->id.'.jpg';
+            $path = public_path() . '/usuarios/' . $user->foto_perfil;
             unlink($path);
 
             $userU = User::where('id', $user->id)->update([ 
