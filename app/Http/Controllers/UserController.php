@@ -210,7 +210,7 @@ class UserController extends ApiController
         if ($request->hasFile($nameKey)) {
             $file = $request->file($nameKey);
             $nameWithExtension = $file->getClientOriginalName();
-            $name = $id.'-'.date('sm').".jpg";
+            $name = $id.".jpg";
 
            $ruta = public_path() . '/usuarios';
 
