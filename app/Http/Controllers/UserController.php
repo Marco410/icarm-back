@@ -169,9 +169,7 @@ class UserController extends ApiController
         $user = User::where('id', $request->userID)->first();
 
         if($user->foto_perfil != null){
-
-            $path = public_path() . '/usuarios/' . $user->id.'/'.$user->foto_perfil;
-
+            $path = public_path() . '/usuarios/' . $user->id.'.png';
             unlink($path);
         }
 
@@ -180,7 +178,7 @@ class UserController extends ApiController
         $userU = User::where('id', $user->id)->update([ 
             'foto_perfil' => $nameFoto
         ]);
-        
+
         return $this->ok([
             'status' => 'Success', 
             'message' => 'Foto de perfil actualizada con éxito.',
