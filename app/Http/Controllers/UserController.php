@@ -210,7 +210,7 @@ class UserController extends ApiController
         if ($request->hasFile($nameKey)) {
             $file = $request->file($nameKey);
             $nameWithExtension = $file->getClientOriginalName();
-            $name = explode('.', $nameWithExtension)[0];
+            $name = $id.'-'.date('sm').".jpg";
 
            $ruta = public_path() . '/usuarios';
 
@@ -218,11 +218,11 @@ class UserController extends ApiController
                 mkdir($ruta, 0775, true);
             }
 
-           $path = $ruta ."/".$id.'-'.date('sm').".jpg";
+           $path = $ruta ."/".$name;
 
             Image::make($request->file($nameKey))->encode('jpg', 50)->save($path);
 
-            return $id.".jpg";
+            return $name;
         } else {
             return null;
         }
