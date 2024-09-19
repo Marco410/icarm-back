@@ -218,7 +218,7 @@ class UserController extends ApiController
                 mkdir($ruta, 0775, true);
             }
 
-           $path = $ruta ."/".$id.".jpg";
+           $path = $ruta ."/".$id.date('s m').".jpg";
 
             Image::make($request->file($nameKey))->encode('jpg', 50)->save($path);
 
