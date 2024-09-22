@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
     return view('welcome');
 }); */
 
-Route::get('/', 'IndexController@index')->name('index');
+Route::get('/app', 'IndexController@index')->name('index');
 
 Route::get('/clear', function () {
     Artisan::call('cache:clear');
