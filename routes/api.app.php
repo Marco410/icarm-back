@@ -70,9 +70,10 @@ Route::group([
 
 
     Route::post('encontrado/create', 'EncontradoController@store');
-  
     Route::get('encontrado/invitados', 'EncontradoController@getInvites');
     Route::get('encontrado/invitado', 'EncontradoController@getEncontrado');
+
+    Route::get('settings/version', 'SettingsController@getAppVersion');
 
 
     Route::get('storage', function () {
