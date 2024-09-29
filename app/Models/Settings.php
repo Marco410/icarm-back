@@ -12,7 +12,7 @@ class Settings extends Model
 
     protected $table = 'settings';
     protected $fillable = [
-        'name','value','important'
+        'name','value','important','data'
     ];
 
 }
