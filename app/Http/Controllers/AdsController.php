@@ -10,7 +10,7 @@ class AdsController extends ApiController
 {
 
     public function getAll(Request $request){
-        $ads = Ads::orderBy('created_at','desc')->get();
+        $ads = Ads::orderBy('created_at',$request->order)->get();
         if($ads){
             return $this->ok([
                 'status' => 'Success', 
