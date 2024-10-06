@@ -11,7 +11,7 @@ class IndexController extends Controller
     public function index(Request $request){
 
 
-        return view("icarm_app.blade.php");
+        return view("icarm_app");
         
 
         $playStoreUrl = "https://play.google.com/store/apps/details?id=com.mtm.icarm";
