@@ -83,7 +83,7 @@
 
 <script>
 
-        //redirect();
+        redirect();
         const downloadButton = document.getElementById('btn-descargar');
 
         downloadButton.addEventListener('click', function() {
