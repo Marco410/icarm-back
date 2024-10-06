@@ -8,22 +8,38 @@
         html,
            body {
                background-color: #F4F5F7;
-               color: #636b6f;
+               color: #1A2228;
                font-family: 'Nunito', sans-serif;
-               height: 100vh;
                justify-content: center;
+               margin: 0;
                height: 100vh;
-               text-align: center
+               text-align: center;
+               padding:20px;
             }
             
             h1 {
                 font-weight: 600;
-                font-size: 40px;
+                font-size: 25px;
                margin-bottom: 10px;
+           }
+
+           p{
+            font-size: 13px;
            }
    
            img {
                border-radius: 25px;
+               margin-top: 10px;
+           }
+
+           .btn {
+            background: #454FD8;
+            color: white;
+            padding: 5px;
+            border-radius: 8px;
+            margin: 30px 10px 10px 10px;
+            font-size: 12px;
+            font-weight: bold;
            }
    
    </style>
@@ -55,27 +71,42 @@
 <body>
 
     <h1>Amor & Restauración Morelia</h1>
-    <img src="{{ asset('assets/logo_back.png') }}" height="200px" alt="Logo app"> 
+    <a href="https://www.amoryrestauracionmorelia.com">
+        <img src="{{ asset('assets/logo_back.png') }}" height="120px" alt="Logo app"> 
+    </a>
+    <p style="font-weight: bold">¡Descubre la Aplicación de Nuestra Iglesia! 📱</p>
+    <p>Bienvenido(a) a la aplicación oficial de nuestra iglesia Amor y Restauración Morelia, donde podrás experimentar una conexión espiritual más profunda y mantenerte al tanto de todas las actividades y eventos importantes. 📆 🗒️</p>
+    <div id="btn-descargar" class="btn">Descargar</div>
     
 </body>
 </html>
 
 <script>
-    const playStoreUrl = "https://play.google.com/store/apps/details?id=com.mtm.icarm";
-    const appStoreUrl = "https://apps.apple.com/mx/app/ayr-morelia/id6449270971?l=en-GB";
 
-    const userAgent = navigator.userAgent.toLowerCase();
+        //redirect();
+        const downloadButton = document.getElementById('btn-descargar');
+
+        downloadButton.addEventListener('click', function() {
+            redirect();
+        });
+
+        function redirect(){
+
+            const playStoreUrl = "https://play.google.com/store/apps/details?id=com.mtm.icarm";
+            const appStoreUrl = "https://apps.apple.com/mx/app/ayr-morelia/id6449270971?l=en-GB";
+            const userAgent = navigator.userAgent.toLowerCase();
+        
+            if (userAgent.includes('iphone') || userAgent.includes('ipad') || userAgent.includes('macintosh')) {
+                // Dispositivos de Apple
+                window.location.href = appStoreUrl;
+            } else if (userAgent.includes('android') || userAgent.includes('windows')) {
+                // Dispositivos Android o Windows
+                window.location.href = playStoreUrl;
+            } else {
+                // Opción por defecto si no se detecta un dispositivo compatible
+                console.log("Dispositivo no compatible detectado.");
+            } 
+        }
 
 
-    // Redirigir según el dispositivo
-    if (userAgent.includes('iphone') || userAgent.includes('ipad') || userAgent.includes('macintosh')) {
-        // Dispositivos de Apple
-        window.location.href = appStoreUrl;
-    } else if (userAgent.includes('android') || userAgent.includes('windows')) {
-        // Dispositivos Android o Windows
-        window.location.href = playStoreUrl;
-    } else {
-        // Opción por defecto si no se detecta un dispositivo compatible
-        console.log("Dispositivo no compatible detectado.");
-    }
 </script>
