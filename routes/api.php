@@ -30,9 +30,9 @@ Route::get('list-event','EventoController@showEvents');
 
 
 Route::group([
-    'middleware' => [
+   /*  'middleware' => [
         'verify.authorization.jwt'
-        ]
+        ] */
     ], function () {
 
     Route::post('create-event','EventoController@createEvent');
