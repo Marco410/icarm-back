@@ -58,7 +58,7 @@ class AuthController extends ApiController
 
         $customClaims = ['custom' => [/*'user' => $user*/]];
 
-        $token = JWTAuth::claims($customClaims)->fromUser($user);
+        //$token = JWTAuth::claims($customClaims)->fromUser($user);
 
         $newLogin = true;
 
@@ -69,7 +69,7 @@ class AuthController extends ApiController
             if (!empty($lastSession)) {
                 if (Carbon::parse($lastSession->last_login)->addDays(env('LOGIN_LIFETIME')) > Carbon::now()) {
                     $newLogin = false;
-                    $userSession = UserSession::refreshToken($user->id, $token);
+                    $userSession = UserSession::refreshToken($user->id, "token");
                 } else {
                     return $this->conflict('Autologin expiró', 409.01);
                 }
@@ -81,7 +81,7 @@ class AuthController extends ApiController
         return $this->ok([
             'status' => 'Success', 
             'data' => [
-                'token' => $token,
+                'token' => "token",
                 'user' => $user,
             ]
         ]);
