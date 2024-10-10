@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
     'middleware' => [
-        'verify.authorization.jwt'
+        'api'
     ] 
 ], function () {
 
