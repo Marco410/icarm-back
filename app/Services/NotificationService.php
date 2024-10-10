@@ -2,19 +2,22 @@
 
 namespace App\Services;
 
-use HelperUtilities;
-use App\Models\Settings;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Http;
 use App\Models\FirebaseToken;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Exception\Messaging\NotFound;
+use Kreait\Firebase\Factory;
 
 class NotificationService {
 
     public $validationsService;
+    protected $messaging;
+
     public function __construct()
     {
-        
+        $serviceAccount = storage_path('mtm-icarm-firebase-adminsdk-slvt4-d2ce33b31c.json');
+
+        $factory = (new Factory)->withServiceAccount($serviceAccount);
+        $this->messaging = $factory->createMessaging();
     }
 
 
@@ -35,17 +38,36 @@ class NotificationService {
         }
     }
 
-    public function sendUserNotification($title,$body,$data,$user_toke_firebase){
-        $settings = Settings::where('name','token_service_firebase')->first(); 
-        $response = Http::withToken($settings->value)->post('https://fcm.googleapis.com/fcm/send', [
-            'to' => $user_toke_firebase,
-            "priority" => "high",
-            'notification' => [
-                "title" => $title,
-                "body" => $body,
+    public function sendUserNotification($title,$body,$data,$token){
+        $payload = [
+            'apns' => [
+                'payload' => [
+                    'aps' => [
+                        'content-available' => 1,
+                        'mutable-content' => 1,
+                        'sound' => 'default', //Can be changed for a custom sound file
+                    ],
+                ],
             ],
-            "data" => $data
-        ]);
-        return $response;
+            'data' => $data,
+        ];
+
+        $message = CloudMessage::withTarget('token', $token)->withNotification(['title' => $title, 'body' => $body])->withData($payload['data'])->withApnsConfig($payload['apns']); 
+
+        try {
+            $this->messaging->send($message);
+        } catch (NotFound $e) {
+
+            \Log::error('Token no válido o no encontrado: ' . $token);
+
+            $this->deleteInvalidToken($token);
+        } catch (\Exception $e) {
+            \Log::error('Error al enviar la notificación: ' . $e->getMessage());
+        }
     }    
+
+    private function deleteInvalidToken($token)
+    {
+        FirebaseToken::where('token', $token)->delete();
+    }
 }
