@@ -59,7 +59,8 @@ class AuthController extends ApiController
         $credentials = [$request->email, $request->password];
 
         $customClaims = ['custom' => [/*'user' => $user*/]];
-        $token = auth('api')->attempt($credentials);
+
+        $token = auth()->login($user);
         //$token = JWTAuth::claims($customClaims)->fromUser($user);
 
         $newLogin = true;
