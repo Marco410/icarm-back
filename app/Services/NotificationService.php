@@ -6,6 +6,7 @@ use App\Models\FirebaseToken;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Exception\Messaging\NotFound;
 use Kreait\Firebase\Factory;
+use App\Models\NotificationModel;
 
 class NotificationService {
 
@@ -21,20 +22,29 @@ class NotificationService {
     }
 
 
-    public function sendNotificationToUserInAPI($user_id,$title,$body,$data){
+    public function sendNotificationToUserInAPI($user_id,$sender,$title,$body,$data){
 
         $firebase_token = FirebaseToken::where('user_id',$user_id)->get();
 
-        $resp = "";
+        if(array_key_exists('type', $data)){
+            $type = $data['type'];
+         }else{
+            $type = 'notification';
+         }
+
+        $noti = NotificationModel::create([
+            'fl_usuario' => $user_id,
+            'fl_sender' => $sender,
+            'title' => $title,
+            'body' => $body,
+            'data' => json_encode($data),
+            'type' => $type
+        ]);
         
         if ($firebase_token) {
             foreach($firebase_token as $token){
-                $notificationService = new NotificationService();
-                $response = $this->sendUserNotification($title,$body,$data,$token->token);
-                $resp .= $response;
-                
+                $this->sendUserNotification($title,$body,$data,$token->token);
             }
-
         }
     }
 
