@@ -132,36 +132,15 @@ class UserController extends ApiController
 
     public function sendNotificationToUSer(Request $request){
 
-        $firebase_token = FirebaseToken::where('user_id',$request->user_id)->get();
+        $notificationService = new NotificationService();
 
-        $resp = "";
-        
-        if ($firebase_token) {
-            foreach($firebase_token as $token){
+        $notificationService->sendNotificationToUserInAPI($request->user_id,0,$request->title,$request->body,[]);
 
-                $title = $request->title;
-                $body = $request->msg;
-                $data = [  
-                    'flag' => 'i',
-                    'route' => 'kid',
-                ];
-                
-                $notificationService = new NotificationService();
-                $response = $notificationService->sendUserNotification($title,$body,$data,$token->token);
-                $resp .= $response;
-                
-            }
-            return $this->ok([
-                'status' => 'Success', 
-                'message' => 'Notificación enviada con éxito.'
-            ]);
+        return $this->ok([
+            'status' => 'Success', 
+            'message' => 'Notificación enviada con éxito.'
+        ]);
 
-        }else{
-            return $this->badRequest([
-                'status' => 'Error', 
-                'message' => 'No se puede enviar notificación al usuario por el momento.'
-            ]);
-        }
     }
 
     public function updateFotoPerfil(Request $request){
