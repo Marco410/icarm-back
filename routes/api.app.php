@@ -75,6 +75,8 @@ Route::group([
 
     Route::get('settings/version', 'SettingsController@getAppVersion');
 
+    Route::get('notification/list', 'NotificationsController@list');
+
 
     Route::get('storage', function () {
         Artisan::call('storage:link');
