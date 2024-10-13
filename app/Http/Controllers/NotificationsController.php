@@ -15,7 +15,7 @@ class NotificationsController extends ApiController
     public function list(Request $request)
     {
 
-        $notis = NotificationModel::where('user_id',$request->user_id)->orderBy('seen','asc')->orderBy('fe_alta','desc')->get();
+        $notis = NotificationModel::where('user_id',$request->user_id)->orderBy('seen','asc')->orderBy('created_at','desc')->get();
 
         return $this->ok(
             [
