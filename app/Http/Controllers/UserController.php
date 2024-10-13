@@ -9,6 +9,7 @@ use App\Models\Ministerio;
 use App\Models\UserHasMinisterios;
 use App\Models\FirebaseToken;
 use App\Services\NotificationService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
@@ -134,7 +135,9 @@ class UserController extends ApiController
 
         $notificationService = new NotificationService();
 
-        $notificationService->sendNotificationToUserInAPI($request->user_id,0,$request->title,$request->body,[]);
+        $data["type"] = "notification";
+
+        $notificationService->sendNotificationToUserInAPI($request->user_id,0,$request->title,$request->body,$data);
 
         return $this->ok([
             'status' => 'Success', 
@@ -143,7 +146,7 @@ class UserController extends ApiController
 
     }
 
-    public function updateFotoPerfil(Request $request){
+    public function updateFotoPerfil(Request $request)  {
 
         $user = User::where('id', $request->userID)->first();
 
