@@ -17,11 +17,12 @@ class NotificationsController extends ApiController
 
         $notis = NotificationModel::where('user_id',$request->user_id)->orderBy('seen','asc')->orderBy('created_at','desc')->get();
 
-        return $this->ok(
-            [
+        return $this->ok([
+            'status' => 'Success', 
+            'data' => [
                 'notificaciones'=>$notis,
-            ]
-        );
+            ] 
+        ]);
     }
 
 }
