@@ -22,7 +22,7 @@ class NotificationService {
     }
 
 
-    public function sendNotificationToUserInAPI($user_id,$sender,$title,$body,$data){
+    public function sendNotificationToUserInAPI($user_id,$sender,$title,$body,$data): void{
 
         $firebase_token = FirebaseToken::where('user_id',$user_id)->get();
 
@@ -48,7 +48,7 @@ class NotificationService {
         }
     }
 
-    public function sendUserNotification($title,$body,$data,$token){
+    public function sendUserNotification($title,$body,$data,$token): void{
         $payload = [
             'apns' => [
                 'payload' => [
@@ -76,7 +76,7 @@ class NotificationService {
         }
     }    
 
-    private function deleteInvalidToken($token)
+    private function deleteInvalidToken($token): void
     {
         FirebaseToken::where('token', $token)->delete();
     }
