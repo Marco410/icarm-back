@@ -33,8 +33,8 @@ class NotificationService {
          }
 
         $noti = NotificationModel::create([
-            'fl_usuario' => $user_id,
-            'fl_sender' => $sender,
+            'user_id' => $user_id,
+            'sender_id' => $sender,
             'title' => $title,
             'body' => $body,
             'data' => json_encode($data),
