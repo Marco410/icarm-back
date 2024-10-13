@@ -76,10 +76,10 @@ Route::group([
     Route::get('settings/version', 'SettingsController@getAppVersion');
 
     Route::get('notification/list', 'NotificationsController@list');
-    Route::get('notification/seen', 'NotificationsController@seen');
-    Route::get('notification/delete', 'NotificationsController@delete');
-    Route::get('notification/delete_all', 'NotificationsController@delete_all');
-    Route::get('notification/seen_all', 'NotificationsController@seen_all');
+    Route::post('notification/seen', 'NotificationsController@seen');
+    Route::post('notification/delete', 'NotificationsController@delete');
+    Route::post('notification/delete_all', 'NotificationsController@delete_all');
+    Route::post('notification/seen_all', 'NotificationsController@seen_all');
 
 
     Route::get('storage', function () {
