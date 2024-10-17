@@ -12,12 +12,12 @@ class CronjobsController extends ApiController
     public function reminderEvent(Request $request)
     {
 
-        $evento = Evento::where('is_public',1)->where('fecha_inicio', date('Y-m-d', strtotime('+1 day')))->get();
+        $evento = Evento::where('is_public',1)->get();
 
         return $this->ok([
             'status' => 'Success', 
             'data' => [
-                'evento'=> date('Y-m-d', strtotime('+1 day')),
+                'evento'=> $evento,
             ] 
         ]);
     }
