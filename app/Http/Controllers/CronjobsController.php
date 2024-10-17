@@ -5,10 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\FirebaseToken;
 use Illuminate\Http\Request;
 use App\Models\Evento;
+use App\Services\NotificationService;
 
 class CronjobsController extends ApiController
 {
-    public $notificationService;
+    protected $firebaseService;
+
+
+    public function __construct()
+    {
+        $this->firebaseService = new NotificationService();
+    }
+
 
     public function reminderEvent(Request $request)
     {
@@ -23,7 +31,18 @@ class CronjobsController extends ApiController
             ->where('reminder',0)
             ->get();
 
-        $tokens = FirebaseToken::where('user_id',2154)->get();
+        $tokens = FirebaseToken::where('user_id',2154)->where('user_id',358)->get();
+
+        $title = "Recordatorio de cita";
+        $body = "";
+
+        $data = [
+            'type' => "date",
+            'fg_status' => 2,
+        ];
+
+
+        $this->firebaseService->sendNotificationToUserInAPI(358,"Ministerio de niños",$body,$data);
 
         return $this->ok([
             'status' => 'Success', 
