@@ -29,9 +29,6 @@ class CronjobsController extends ApiController
             ->get()
             ->unique('user_id')->values();
 
-        
-
-        return $tokens;
 
         $title = "📆 Recordatorio de evento ";
         $body = "";
@@ -43,14 +40,16 @@ class CronjobsController extends ApiController
         if ($eventoSemana) {
             $body = "¡Faltan 7 días para $eventoSemana->nombre! 📅 No olvides reservar la fecha. Será a las " 
                 . date('H:i', strtotime($eventoSemana->fecha_inicio)) . " hrs ⏰";
-            $eventoSemana->update(['reminder' => 1]); 
+            $eventoSemana->update(['reminder' => 1]);
+            $data['event_id'] = $eventoSemana->id;
             $this->sendReminder($tokens, $title, $body, $data);
         }
-
+        
         if ($eventoDosDias) {
             $body = "¡Faltan solo 2 días para $eventoDosDias->nombre! ⏳ No te olvides de confirmar tu asistencia. Será a las " 
-                . date('H:i', strtotime($eventoDosDias->fecha_inicio)) . " hrs ⏰";
+            . date('H:i', strtotime($eventoDosDias->fecha_inicio)) . " hrs ⏰";
             $eventoDosDias->update(['reminder' => 2]);
+            $data['event_id'] = $eventoDosDias->id;
             $this->sendReminder($tokens, $title, $body, $data);
         }
 
@@ -58,6 +57,7 @@ class CronjobsController extends ApiController
             $body = "¡Mañana es $eventoMañana->nombre! 🎉 No te lo pierdas. Te esperamos puntualmente a las " 
                 . date('H:i', strtotime($eventoMañana->fecha_inicio)) . " hrs ⏰";
             $eventoMañana->update(['reminder' => 3]);
+            $data['event_id'] = $eventoMañana->id;
             $this->sendReminder($tokens, $title, $body, $data);
         }
         return null;
