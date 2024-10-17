@@ -22,4 +22,54 @@ class NotificationsController extends ApiController
         ]);
     }
 
+    public function seen(Request $request)
+    {
+        $noti = NotificationModel::where('id',$request->noti_id)->update(['seen' => 1]);
+
+            return $this->ok([
+                'status' => 'Success', 
+                'data' => [
+                'notificacion'=>$noti,
+            ] 
+        ]);
+    }
+
+    public function delete(Request $request)
+    {
+
+        $noti = NotificationModel::where('id',$request->noti_id)->delete();
+
+        return $this->ok([
+                'status' => 'Success', 
+                'data' => [
+                'notificacion'=>$noti,
+            ] 
+        ]);
+    }
+
+    public function delete_all(Request $request)
+    {
+
+        $noti = NotificationModel::where('user_id',$request->user_id)->delete();
+
+        return $this->ok([
+                'status' => 'Success', 
+                'data' => [
+                'notificacion'=>$noti,
+            ] 
+        ]);
+    }
+
+    public function seen_all(Request $request)
+    {
+        $noti = NotificationModel::where('user_id',$request->user_id)->update(['seen' => 1]);
+
+        return $this->ok([
+            'status' => 'Success', 
+            'data' => [
+            'notificacion'=>$noti,
+        ] 
+    ]);
+    }
+
 }

@@ -76,6 +76,10 @@ Route::group([
     Route::get('settings/version', 'SettingsController@getAppVersion');
 
     Route::get('notification/list', 'NotificationsController@list');
+    Route::post('notification/seen', 'NotificationsController@seen');
+    Route::post('notification/delete', 'NotificationsController@delete');
+    Route::post('notification/delete_all', 'NotificationsController@delete_all');
+    Route::post('notification/seen_all', 'NotificationsController@seen_all');
     
     Route::get('cronjobs/reminderEvent', 'CronjobsController@reminderEvent');
 

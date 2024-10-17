@@ -65,13 +65,14 @@ class ClassroomController extends ApiController
             $kid = Kids::where('id',$class->kid_id)->with('user')->first();
             $user = User::where('id',$class->user_id)->first();
 
-            $body = "" . $kid->nombre. " ". $kid->a_paterno . " acaba de salir del salón. El maestro: " . $user->nombre. " " . $user->apellido_paterno. " le dio la salida.";
+            $body = $kid->nombre. " ". $kid->a_paterno . " acaba de salir del salón. El maestro: " . $user->nombre. " " . $user->apellido_paterno. " le dio la salida.";
 
             $data = [  
                 'flag' => 'i',
                 'route' => 'kid',
+                'type' => 'ninos',
             ];
-
+            
             $notificationService->sendNotificationToUserInAPI($kid->user->id,0,"Ministerio de niños",$body,$data);
 
             return $this->ok([

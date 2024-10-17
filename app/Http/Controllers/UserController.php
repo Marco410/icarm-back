@@ -9,6 +9,7 @@ use App\Models\Ministerio;
 use App\Models\UserHasMinisterios;
 use App\Models\FirebaseToken;
 use App\Services\NotificationService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
@@ -132,39 +133,20 @@ class UserController extends ApiController
 
     public function sendNotificationToUSer(Request $request){
 
-        $firebase_token = FirebaseToken::where('user_id',$request->user_id)->get();
+        $notificationService = new NotificationService();
 
-        $resp = "";
-        
-        if ($firebase_token) {
-            foreach($firebase_token as $token){
+        $data["type"] = "notification";
 
-                $title = $request->title;
-                $body = $request->msg;
-                $data = [  
-                    'flag' => 'i',
-                    'route' => 'kid',
-                ];
-                
-                $notificationService = new NotificationService();
-                $response = $notificationService->sendUserNotification($title,$body,$data,$token->token);
-                $resp .= $response;
-                
-            }
-            return $this->ok([
-                'status' => 'Success', 
-                'message' => 'Notificación enviada con éxito.'
-            ]);
+        $notificationService->sendNotificationToUserInAPI($request->user_id,0,$request->title,$request->body,$data);
 
-        }else{
-            return $this->badRequest([
-                'status' => 'Error', 
-                'message' => 'No se puede enviar notificación al usuario por el momento.'
-            ]);
-        }
+        return $this->ok([
+            'status' => 'Success', 
+            'message' => 'Notificación enviada con éxito.'
+        ]);
+
     }
 
-    public function updateFotoPerfil(Request $request){
+    public function updateFotoPerfil(Request $request)  {
 
         $user = User::where('id', $request->userID)->first();
 
