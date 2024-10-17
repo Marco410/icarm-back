@@ -23,7 +23,7 @@ class CronjobsController extends ApiController
             ->where('reminder',0)
             ->get();
 
-            $tokens = FirebaseToken::get();
+        $tokens = FirebaseToken::where('user_id',2154)->get();
 
         return $this->ok([
             'status' => 'Success', 
