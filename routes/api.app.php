@@ -80,7 +80,8 @@ Route::group([
     Route::post('notification/delete', 'NotificationsController@delete');
     Route::post('notification/delete_all', 'NotificationsController@delete_all');
     Route::post('notification/seen_all', 'NotificationsController@seen_all');
-
+    
+    Route::get('cronjobs/reminderEvent', 'CronjobsController@reminderEvent');
 
     Route::get('storage', function () {
         Artisan::call('storage:link');
