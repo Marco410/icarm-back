@@ -31,7 +31,7 @@ class CronjobsController extends ApiController
             ->where('reminder',0)
             ->first();
 
-        $tokens = FirebaseToken::where('user_id',2154)->orWhere('user_id',358)->first();
+        $tokens = FirebaseToken::where('user_id',2154)->orWhere('user_id',358)->groupBy('user_id')->first();
 
         $title = "Recordatorio de evento 📆";
         $body = "Mañana es: $evento->nombre. No te quedes fuera y confirma tu asistencia. ";
@@ -42,7 +42,7 @@ class CronjobsController extends ApiController
         ];
 
         foreach ($tokens as $token){
-            $this->firebaseService->sendNotificationToUserInAPI($token->user_id,$title,$body,$data);
+           /*  $this->firebaseService->sendNotificationToUserInAPI($token->user_id,$title,$body,$data); */
         }
 
         return $this->ok([
