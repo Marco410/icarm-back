@@ -27,7 +27,9 @@ class CronjobsController extends ApiController
 
         $tokens = FirebaseToken::orderBy('created_at')
             ->get()
-            ->unique('user_id');
+            ->unique('user_id')->values();
+
+        
 
         return $tokens;
 
