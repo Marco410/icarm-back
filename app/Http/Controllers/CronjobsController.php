@@ -37,7 +37,7 @@ class CronjobsController extends ApiController
             ->unique('user_id');  
 
         $title = "Recordatorio de evento 📆";
-        $body = "Mañana es: $evento->nombre. No te quedes fuera y confirma tu asistencia. ";
+        $body = "Mañana es: $evento->nombre. No te quedes fuera y confirma tu asistencia. Recuerda que es en punto de las ". date('H:i', strtotime($evento->fecha_inicio)) . ' hrs ⏰';
 
         $data = [
             'type' => "event",

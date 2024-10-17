@@ -72,7 +72,7 @@ class ClassroomController extends ApiController
                 'route' => 'kid',
             ];
 
-            $response = $notificationService->sendNotificationToUserInAPI($kid->user->id,0,"Ministerio de niños",$body,$data);
+            $notificationService->sendNotificationToUserInAPI($kid->user->id,0,"Ministerio de niños",$body,$data);
 
             return $this->ok([
                 'status' => 'Success', 
