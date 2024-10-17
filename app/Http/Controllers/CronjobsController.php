@@ -45,7 +45,7 @@ class CronjobsController extends ApiController
         ];
 
         foreach ($tokens as $token){
-           /*  $this->firebaseService->sendNotificationToUserInAPI($token->user_id,$title,$body,$data); */
+             $this->firebaseService->sendNotificationToUserInAPI($token->user_id,$title,$body,$data); 
         }
 
         return $this->ok([
