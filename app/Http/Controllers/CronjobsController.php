@@ -41,21 +41,21 @@ class CronjobsController extends ApiController
             $body = "¡Faltan 7 días para $eventoSemana->nombre! 📅 No olvides reservar la fecha. Será a las " 
                 . date('H:i', strtotime($eventoSemana->fecha_inicio)) . " hrs ⏰";
             $eventoSemana->update(['reminder' => 1]); 
-            $this->enviarNotificacion($tokens, $title, $body, $data);
+            $this->sendReminder($tokens, $title, $body, $data);
         }
 
         if ($eventoDosDias) {
             $body = "¡Faltan solo 2 días para $eventoDosDias->nombre! ⏳ No te olvides de confirmar tu asistencia. Será a las " 
                 . date('H:i', strtotime($eventoDosDias->fecha_inicio)) . " hrs ⏰";
             $eventoDosDias->update(['reminder' => 2]);
-            $this->enviarNotificacion($tokens, $title, $body, $data);
+            $this->sendReminder($tokens, $title, $body, $data);
         }
 
         if ($eventoMañana) {
             $body = "¡Mañana es $eventoMañana->nombre! 🎉 No te lo pierdas. Te esperamos puntualmente a las " 
                 . date('H:i', strtotime($eventoMañana->fecha_inicio)) . " hrs ⏰";
             $eventoMañana->update(['reminder' => 3]);
-            $this->enviarNotificacion($tokens, $title, $body, $data);
+            $this->sendReminder($tokens, $title, $body, $data);
         }
         return null;
     }
