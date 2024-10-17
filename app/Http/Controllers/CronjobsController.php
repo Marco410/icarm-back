@@ -31,7 +31,7 @@ class CronjobsController extends ApiController
             ->where('reminder',0)
             ->first();
 
-            $tokens = FirebaseToken::whereIn('user_id', [2154, 358])
+            $tokens = FirebaseToken::whereIn('user_id', [2154])
             ->orderBy('created_at')  
             ->get()
             ->unique('user_id');  
