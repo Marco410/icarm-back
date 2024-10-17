@@ -17,7 +17,7 @@ class CronjobsController extends ApiController
         return $this->ok([
             'status' => 'Success', 
             'data' => [
-                'evento'=>$evento,
+                'evento'=> date('Y-m-d', strtotime('+1 day')),
             ] 
         ]);
     }
