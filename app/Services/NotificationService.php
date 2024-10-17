@@ -31,6 +31,7 @@ class NotificationService {
          }else{
             $type = 'notification';
          }
+         $resp = "";
 
          $noti = NotificationModel::create([
             'user_id' => $user_id,
