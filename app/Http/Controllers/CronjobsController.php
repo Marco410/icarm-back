@@ -25,10 +25,11 @@ class CronjobsController extends ApiController
         $eventoDosDias = $this->searchEvent(2, 1);   // 2 días antes
         $eventoMañana = $this->searchEvent(1, 2);    // 1 día antes
 
-        $tokens = FirebaseToken::whereIn('user_id', [2154])
-            ->orderBy('created_at')
+        $tokens = FirebaseToken::orderBy('created_at')
             ->get()
             ->unique('user_id');
+
+        return $tokens;
 
         $title = "📆 Recordatorio de evento ";
         $body = "";
