@@ -31,7 +31,7 @@ class CronjobsController extends ApiController
             ->where('reminder',0)
             ->first();
 
-        $tokens = FirebaseToken::where('user_id',2154)->orWhere('user_id',358)->get();
+        $tokens = FirebaseToken::groupBy('user_id')->get();
 
         $title = "Recordatorio de evento 📆";
         $body = "Mañana es: $evento->nombre. No te quedes fuera y confirma tu asistencia. ";
