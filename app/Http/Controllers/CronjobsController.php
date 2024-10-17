@@ -26,28 +26,29 @@ class CronjobsController extends ApiController
         $fechaInicio = date('Y-m-d 00:00:00', strtotime('+1 day'));
         $fechaFin = date('Y-m-d 23:59:59', strtotime('+1 day'));
 
-        $eventos = Evento::where('is_public', 1)
+        $evento = Evento::where('is_public', 1)
             ->whereBetween('fecha_inicio', [$fechaInicio, $fechaFin])
             ->where('reminder',0)
-            ->get();
+            ->first();
 
         $tokens = FirebaseToken::where('user_id',2154)->where('user_id',358)->get();
 
-        $title = "Recordatorio de cita";
-        $body = "";
+        $title = "Recordatorio de evento 📆";
+        $body = "Mañana es: $evento->nombre. No te quedes fuera y confirma tu asistencia. ";
 
         $data = [
-            'type' => "date",
-            'fg_status' => 2,
+            'type' => "event",
+            'fg_status' => 1,
         ];
 
-
-        $this->firebaseService->sendNotificationToUserInAPI(358,"Ministerio de niños",$body,$data);
+        foreach ($tokens as $token){
+            $this->firebaseService->sendNotificationToUserInAPI($token->user_id,$title,$body,$data);
+        }
 
         return $this->ok([
             'status' => 'Success', 
             'data' => [
-                'evento'=> $eventos,
+                'evento'=> $evento,
                 'tokens'=> $tokens,
             ] 
         ]);
