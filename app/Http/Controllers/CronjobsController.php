@@ -23,7 +23,7 @@ class CronjobsController extends ApiController
 
         $eventoSemana = $this->searchEvent(7, 0);    // 7 días antes 
         $eventoDosDias = $this->searchEvent(2, 1);   // 2 días antes
-        $eventoMañana = $this->searchEvent(1, 0);    // 1 día antes
+        $eventoMañana = $this->searchEvent(1, 2);    // 1 día antes
 
         $tokens = FirebaseToken::whereIn('user_id', [2154])
             ->orderBy('created_at')
