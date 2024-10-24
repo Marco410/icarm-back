@@ -250,6 +250,10 @@ class EventoController extends  ApiController
                 $path = public_path() . '/eventos/'. $evento->id . '/' . $evento->img_horizontal;
                 unlink($path);
             }
+            
+            $pathFolder = public_path() . '/eventos/'. $evento->id;
+            unlink($pathFolder);
+
 
             $evento->delete();
 
