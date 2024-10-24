@@ -235,16 +235,32 @@ class EventoController extends  ApiController
         return $this->ok(json_decode(json_encode($result)));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function delete(Request $request)
     {
-        
+            
+            $evento = Evento::where('id',$request->eventID)->first();
+
+
+            if($evento->img_vertical){
+                $path = public_path() . '/eventos/'. $evento->id . '/' . $evento->img_vertical;
+                unlink($path);
+            }
+
+            if($evento->img_horizontal){
+                $path = public_path() . '/eventos/'. $evento->id . '/' . $evento->img_horizontal;
+                unlink($path);
+            }
+
+            $evento->delete();
+
+            return $this->ok([
+                'status' => 'Success', 
+                'message' => 'Evento eliminado con éxito',
+                'data' => $evento
+            ]);
+      
     }
+
 
     /**
      * Display the specified resource.
@@ -257,27 +273,6 @@ class EventoController extends  ApiController
         return $this->ok(Evento::where('iglesia_id', $request->iglesia_id)->get());
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 
     public function storeFoto($request,$id,$nameKey)
     {

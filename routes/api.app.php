@@ -65,6 +65,7 @@ Route::group([
     Route::get('evento', 'EventoController@get');
     Route::post('evento/create', 'EventoController@create');
     Route::post('evento/update', 'EventoController@update');
+    Route::post('evento/delete', 'EventoController@delete');
     Route::post('evento/interested', 'EventoController@create_interested');
     Route::get('evento/get/interested', 'EventoController@getInterested');
 
