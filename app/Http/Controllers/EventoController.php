@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
-use File; 
+
 class EventoController extends  ApiController
 {
     /**
@@ -256,7 +256,7 @@ class EventoController extends  ApiController
             }
 
             $pathFolder = public_path() . '/eventos/'. $evento->id . '/';
-            File::deleteDirectory(public_path($pathFolder));
+            Storage::deleteDirectory( $pathFolder);
             
             $evento->delete();
 
