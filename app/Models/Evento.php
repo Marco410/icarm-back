@@ -13,7 +13,7 @@ class Evento extends Model
 
 
     protected $fillable = [
-        'id','iglesia_id','nombre','fecha_inicio','fecha_fin','descripcion','direccion','img_vertical','img_horizontal','is_favorite','can_register','is_public','reminder'
+        'id','iglesia_id','nombre','link','fecha_inicio','fecha_fin','descripcion','direccion','img_vertical','img_horizontal','is_favorite','can_register','is_public','reminder'
     ];
 
     protected $hidden = [];

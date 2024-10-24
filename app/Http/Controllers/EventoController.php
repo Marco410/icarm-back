@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class EventoController extends  ApiController
 {
@@ -162,6 +163,7 @@ class EventoController extends  ApiController
             $evento = Evento::create([
                 'iglesia_id' => $request->iglesia_id,
                 'nombre' => $request->nombre,
+                'link' => Str::slug($request->nombre)."-".Carbon::parse($request->fecha_inicio)->format('d-m-Y'),
                 'fecha_inicio' => $request->fecha_inicio,
                 'fecha_fin' => $request->fecha_fin,
                 'descripcion' => $request->descripcion,
