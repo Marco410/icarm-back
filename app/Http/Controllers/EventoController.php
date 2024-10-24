@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
-
+use File; 
 class EventoController extends  ApiController
 {
     /**
@@ -250,11 +250,10 @@ class EventoController extends  ApiController
                 $path = public_path() . '/eventos/'. $evento->id . '/' . $evento->img_horizontal;
                 unlink($path);
             }
-            
+
             $pathFolder = public_path() . '/eventos/'. $evento->id;
-            unlink($pathFolder);
-
-
+            File::deleteDirectory(public_path($pathFolder));
+            
             $evento->delete();
 
             return $this->ok([
