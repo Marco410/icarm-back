@@ -243,12 +243,16 @@ class EventoController extends  ApiController
 
             if($evento->img_vertical){
                 $path = public_path() . '/eventos/'. $evento->id . '/' . $evento->img_vertical;
-                unlink($path);
+                if (file_exists($path)){
+                    unlink($path);
+                }
             }
 
             if($evento->img_horizontal){
                 $path = public_path() . '/eventos/'. $evento->id . '/' . $evento->img_horizontal;
-                unlink($path);
+                if (file_exists($path)){
+                    unlink($path);
+                }
             }
 
             $pathFolder = public_path() . '/eventos/'. $evento->id;
