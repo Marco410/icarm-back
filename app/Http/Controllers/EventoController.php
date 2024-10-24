@@ -255,7 +255,7 @@ class EventoController extends  ApiController
                 }
             }
 
-            $pathFolder = public_path() . '/eventos/'. $evento->id . '/';
+            $pathFolder = public_path() . '/eventos/'. $evento->id;
             Storage::deleteDirectory( $pathFolder);
             
             $evento->delete();
