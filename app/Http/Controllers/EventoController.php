@@ -9,8 +9,8 @@ use App\Models\Iglesia;
 
 use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class EventoController extends  ApiController
 {
@@ -255,8 +255,12 @@ class EventoController extends  ApiController
                 }
             }
 
-            $pathFolder = public_path() . '/eventos/'. $evento->id;
-            Storage::deleteDirectory( $pathFolder);
+
+            $pathFolder = public_path('eventos/' . $evento->id);
+
+            if (File::exists($pathFolder)) {
+                File::deleteDirectory($pathFolder);
+            }
             
             $evento->delete();
 
