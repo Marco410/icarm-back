@@ -5,15 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Iglesia extends Model
+class Interested extends Model
 {
     use HasFactory;
 
+    protected $table = 'interested';
+
+
     protected $fillable = [
-        'nombre','web','calle','numero','colonia','cp','ciudad','estado','pais','lat','lng','telefono','facebook','instagram','youtube','pastores','horarios','mision','historia'
+        'id','user_id','evento_id'
     ];
 
-    public function user(){
+    protected $hidden = [];
+
+   public function user(){
         return $this->belongsTo(User::class)->with('sexo');
     }
+
+    public function evento(){
+        return $this->belongsTo(Evento::class);
+    }
+
 }

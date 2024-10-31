@@ -55,9 +55,16 @@ class UserSession extends ApiModel
     public static function clearData($user_id)
     {
         $UserSession = UserSession::find($user_id);
-        $UserSession->token = null;
-        $UserSession->last_request = null;
-        $UserSession->update();
+        if (!empty($UserSession)) {
+            $UserSession->token = null;
+            $UserSession->last_request = null;
+            $UserSession->update();
+        }else{
+            $data['user_id'] = $user_id;
+            $data['last_login'] = Carbon::now();
+            $data['last_request'] = Carbon::now();
+            return UserSession::create($data);
+        }
         return $UserSession;
     }
 
@@ -65,17 +72,32 @@ class UserSession extends ApiModel
     public static function updateLastRequest($user_id)
     {
         $UserSession = UserSession::find($user_id);
-        $UserSession->last_request = Carbon::now();
-        $UserSession->update();
+
+        if (!empty($UserSession)) {
+            $UserSession->last_request = Carbon::now();
+            $UserSession->update();
+        }else{
+            $data['user_id'] = $user_id;
+            $data['last_login'] = Carbon::now();
+            $data['last_request'] = Carbon::now();
+            return UserSession::create($data);
+        }
         return $UserSession;
     }
 
     public static function refreshToken($user_id, $token)
     {
         $UserSession = UserSession::find($user_id);
-        $UserSession->token = $token;
-        $UserSession->last_request = Carbon::now();
-        $UserSession->update();
+        if (!empty($UserSession)) {
+            $UserSession->token = $token;
+            $UserSession->last_request = Carbon::now();
+            $UserSession->update();
+        }else{
+            $data['user_id'] = $user_id;
+            $data['last_login'] = Carbon::now();
+            $data['last_request'] = Carbon::now();
+            return UserSession::create($data);
+        }
         return $UserSession;
     }
 }

@@ -5,19 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Pais extends Model
+class Pago extends Model
 {
     use HasFactory;
 
 
-    protected $table = 'paises';
+    protected $table = 'pagos';
     protected $fillable = [
         'id',
-        'nombre'
+        'id_persona',
+        'evento_id',
+        'concepto',
+        'cantidad',
+        'fecha_agrego',
     ];
 
     protected $hidden = [
-       'updated_at','created_at'
+       'updated_at'
     ];
 
 }

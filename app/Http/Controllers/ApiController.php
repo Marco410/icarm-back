@@ -25,12 +25,12 @@ class ApiController extends Controller
             DB::enableQueryLog();
         }
 
-        $this->user = JWTAuth::user();
+        /* $this->user = JWTAuth::user(); */
     }
 
 
-    public function getUserLoggedIn()
+/*     public function getUserLoggedIn()
     {
         return JWTAuth::user();
-    }
+    } */
 }

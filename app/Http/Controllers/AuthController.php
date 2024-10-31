@@ -9,6 +9,11 @@ use App\Models\UserSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Mail;
+
+
+use App\Mail\ForgotPassMail;
+
 
 class AuthController extends ApiController
 {
@@ -45,12 +50,18 @@ class AuthController extends ApiController
         }
 
         if ($user->password != hash('sha512', $request->password)) {
-            return $this->forbidden('Contraseña incorrecta', 403.01);
+            return [
+                'status' => 'Error',
+                'message' => 'Contraseña incorrecta'
+            ]; 
         }
+
+        $credentials = [$request->email, $request->password];
 
         $customClaims = ['custom' => [/*'user' => $user*/]];
 
-        $token = JWTAuth::claims($customClaims)->fromUser($user);
+        $token = auth()->login($user);
+        //$token = JWTAuth::claims($customClaims)->fromUser($user);
 
         $newLogin = true;
 
@@ -61,7 +72,7 @@ class AuthController extends ApiController
             if (!empty($lastSession)) {
                 if (Carbon::parse($lastSession->last_login)->addDays(env('LOGIN_LIFETIME')) > Carbon::now()) {
                     $newLogin = false;
-                    $userSession = UserSession::refreshToken($user->id, $token);
+                    $userSession = UserSession::refreshToken($user->id, "token");
                 } else {
                     return $this->conflict('Autologin expiró', 409.01);
                 }
@@ -135,6 +146,7 @@ class AuthController extends ApiController
             'password' => $password,
             'telefono' => $request->telefono,
             'sexo' => $request->sexo,
+            'sexo_id' => $request->sexo_id,
             'pais_id' => $request->pais_id,
             'active' => 1
         ])->assignRole('Usuario');
@@ -201,15 +213,32 @@ class AuthController extends ApiController
 
     public function updateFirebase(Request $request){
 
-        $fire = FirebaseToken::where('token', $request->firebase_token)->first();
+        $fire = FirebaseToken::where('token', $request->firebase_token)->orderBy('id', 'desc')->first();
         $firebase = "";
 
-        if(!$fire){
+        if($fire){
+            if($fire->user_id != $request->userId){
+                $firebase = FirebaseToken::create([
+                    'user_id' => $request->userId,
+                    'token' => $request->firebase_token
+                ]);
+            }else{
+                if(!$fire){
+                    $firebase = FirebaseToken::create([
+                        'user_id' => $request->userId,
+                        'token' => $request->firebase_token
+                    ]);
+                }
+    
+            }
+
+        }else{
             $firebase = FirebaseToken::create([
                 'user_id' => $request->userId,
                 'token' => $request->firebase_token
             ]);
         }
+
 
         return $this->ok([
             'status' => 'Success',
@@ -219,15 +248,71 @@ class AuthController extends ApiController
 
     public function deleteAccount(Request $request){
 
-        return $request;
-
         $user = User::where('id', $request->userId)->update([ 
             'active' => 0
         ]);
 
         return $this->ok([
             'status' => 'Success',
-            'messagge' => 'Cuenta eliminada con éxito.ß'
+            'message' => 'Cuenta eliminada con éxito.'
         ]);
+    }
+
+    public function forgot(Request $request){
+
+        $user = User::where('email', $request->email)->where('active',1)->first();
+
+        if($user){
+            $pass =  strtoupper(substr($user->apellido_paterno,0,2)). Date('y').'ICARM'.Date('s');
+
+            Mail::to($request->email)->send(new ForgotPassMail($user,$pass));
+
+            $password = hash('sha512', $pass);
+
+            $userPass = User::where('id', $user->id)->update([ 
+                'password' => $password,
+                'pass_update' => 1
+            ]);
+    
+            return $this->ok([
+                'status' => 'Success',
+                'message' => 'El correo de recuperación de contraseña fue enviado con éxito. Por favor revisa tu carpeta de SPAM.'
+            ]);
+
+        }else{
+            return $this->badRequest([
+                'status' => 'Error', 
+                'message' => 'No pudimos encontrar un usuario con este correo.'
+            ]);
+        }
+
+
+    }
+
+    public function updatePassword(Request $request){
+
+        $user = User::where('id', $request->user_id)->where('active',1)->first();
+
+        if($user){
+
+            $password = hash('sha512', $request->password);
+            $userPass = User::where('id', $user->id)->update([ 
+                'password' => $password,
+                'pass_update' => 0
+            ]);
+    
+            return $this->ok([
+                'status' => 'Success',
+                'message' => 'Contraseña actualizada con éxito.'
+            ]);
+
+        }else{
+            return $this->badRequest([
+                'status' => 'Error', 
+                'message' => 'No pudimos encontrar el usuario.'
+            ]);
+        }
+
+
     }
 }

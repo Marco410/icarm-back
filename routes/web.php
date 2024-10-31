@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Route;
     return view('welcome');
 }); */
 
-Route::get('/', 'IndexController@index')->name('index');
+Route::get('/', 'IndexController@index');
+Route::get('/icarm-app', 'IndexController@index');
 
 Route::get('/clear', function () {
     Artisan::call('cache:clear');

@@ -5,14 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PaseLista extends Model
+class Module extends Model
 {
     use HasFactory;
 
-    protected $table = 'paselista';
+
+    protected $table = 'modules';
+    
     protected $fillable = [
-        'id_persona','evento','fh','evento_id'
+        'name','url'
     ];
 
+    protected $hidden = [
+        'updated_at'
+    ];
     
 }

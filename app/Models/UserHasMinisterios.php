@@ -5,19 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Pais extends Model
+class UserHasMinisterios extends Model
 {
     use HasFactory;
 
 
-    protected $table = 'paises';
+    protected $table = 'user_has_ministerios';
     protected $fillable = [
-        'id',
-        'nombre'
+        'user_id',
+        'ministerio_id'
     ];
 
     protected $hidden = [
        'updated_at','created_at'
     ];
+
+    public function ministerio(){
+        return $this->hasOne(Ministerio::class,'id','ministerio_id');
+    }
 
 }
