@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Evento;
 use App\Models\Interested;
 use App\Models\Iglesia;
+use Illuminate\Support\Str;
 
 use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
@@ -40,10 +41,24 @@ class EventoController extends  ApiController
             ]);
 
         } else{
+
+            if(!$request->user_id){
+                return $this->badRequest([
+                    'status' => 'Error', 
+                    'message' => 'El usuario es requerido.'
+                ]);
+            }
+
+
+            $userId = $request->user_id;
             return $this->ok([
                 'status' => 'Success', 
                 'data' => [
-                    'eventos' => Evento::where('id', '!=', 1)->where('is_public',1)->where('fecha_fin','>',Carbon::now()->subDays(1)->format ('Y-m-d h:i:s'))->orderBy('fecha_inicio','asc')->with(["iglesia"])->withCount('interested')->get()
+                    'eventos' => Evento::where('id', '!=', 1)->where('is_public',1)->where('fecha_fin','>',Carbon::now()->subDays(1)->format ('Y-m-d h:i:s'))->orderBy('fecha_inicio','asc')->with(["iglesia"])->withCount('interested')
+                    ->withCount(['interested as user_interested' => function ($query) use ($userId) {
+                        $query->where('user_id', $userId);
+                    }])
+                    ->get()
                 ]
             ]);
         }
@@ -162,6 +177,7 @@ class EventoController extends  ApiController
             $evento = Evento::create([
                 'iglesia_id' => $request->iglesia_id,
                 'nombre' => $request->nombre,
+                'link' => Str::slug(trim($request->nombre . $request->fecha_inicio), '-'),
                 'fecha_inicio' => $request->fecha_inicio,
                 'fecha_fin' => $request->fecha_fin,
                 'descripcion' => $request->descripcion,
@@ -235,16 +251,6 @@ class EventoController extends  ApiController
         return $this->ok(json_decode(json_encode($result)));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        
-    }
 
     /**
      * Display the specified resource.
@@ -255,28 +261,6 @@ class EventoController extends  ApiController
     public function showEvents(Request $request)
     {
         return $this->ok(Evento::where('iglesia_id', $request->iglesia_id)->get());
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 
     public function storeFoto($request,$id,$nameKey)
