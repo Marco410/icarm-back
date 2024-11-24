@@ -47,7 +47,7 @@ class ClassroomController extends ApiController
 
     public function getKidsFromTeacher(Request $request){
 
-        $kids = Classroom::where('user_id',$request->user_id)->where('is_in' , 1)->with('kid')->get();
+        $kids = Classroom::where('user_id',$request->user_id)->where('is_in' , 1)->whereHas('kid')->with('kid')->get();
         return $this->ok([
             'status' => 'Success', 
             'data' => $kids
