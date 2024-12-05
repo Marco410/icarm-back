@@ -13,14 +13,27 @@
                justify-content: center;
                margin: 0;
                height: 100vh;
-               text-align: center;
                padding:20px;
+               display: flex;
             }
+
+            .container {
+                max-width: 600px;
+                width: 100%;
+                text-align: center;
+                background-color: white; 
+                padding: 20px; 
+                border-radius: 10px; 
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+                height: fit-content;
+
+            }
+
             
             h1 {
                 font-weight: 600;
                 font-size: 25px;
-               margin-bottom: 10px;
+                margin-bottom: 10px;
            }
 
            p{
@@ -40,6 +53,7 @@
             margin: 30px 10px 10px 10px;
             font-size: 12px;
             font-weight: bold;
+            cursor: pointer;
            }
    
    </style>
@@ -48,6 +62,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ICARM App 📱</title>
+    <link rel="icon" href="{{ asset('assets/logo_back.png') }}" type="image/png">
+
     
     <!-- Metadatos para SEO -->
     <meta name="description" content="💒 Amor & Restauración Morelia - Conéctate con nuestra comunidad a través de la app oficial.">
@@ -70,13 +86,15 @@
 </head>
 <body>
 
-    <h1>Amor & Restauración Morelia</h1>
-    <a href="https://www.amoryrestauracionmorelia.com">
-        <img src="{{ asset('assets/logo_back.png') }}" height="120px" alt="Logo app"> 
-    </a>
-    <p style="font-weight: bold">¡Descubre la Aplicación de Nuestra Iglesia! 📱</p>
-    <p>Bienvenido(a) a la aplicación oficial de nuestra iglesia Amor y Restauración Morelia, donde podrás experimentar una conexión espiritual más profunda y mantenerte al tanto de todas las actividades y eventos importantes. 📆 🗒️</p>
-    <div id="btn-descargar" class="btn">Descargar</div>
+    <div class="container">
+        <h1>Amor & Restauración Morelia</h1>
+        <a href="https://www.amoryrestauracionmorelia.com">
+            <img src="{{ asset('assets/logo_back.png') }}" height="120px" alt="Logo app"> 
+        </a>
+        <p style="font-weight: bold">¡Descubre la Aplicación de Nuestra Iglesia! 📱</p>
+        <p>Bienvenido(a) a la aplicación oficial de nuestra iglesia Amor y Restauración Morelia, donde podrás experimentar una conexión espiritual más profunda y mantenerte al tanto de todas las actividades y eventos importantes. 📆 🗒️</p>
+        <div id="btn-descargar" class="btn">Descargar</div>
+    </div>
     
 </body>
 </html>

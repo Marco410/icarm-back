@@ -72,7 +72,7 @@ class EventoController extends  ApiController
         return $this->ok([
             'status' => 'Success', 
             'data' => [
-                'evento' => Evento::where('id', $request->eventoID)->with(["iglesia"])->withCount(['interested'])->get()
+                'evento' => Evento::where('link', $request->link)->with(["iglesia"])->withCount(['interested'])->get()
             ]
         ]);
     }
