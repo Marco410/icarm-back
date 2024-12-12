@@ -126,14 +126,6 @@
             {{ \Carbon\Carbon::parse($evento->fecha_fin)->format('d M') }} | 
             {{ \Carbon\Carbon::parse($evento->fecha_inicio)->format('h:i A') }}</p>
         
-        @if($evento->direccion == null)
-            <p>📍 {{$evento->iglesia->calle}} #{{$evento->iglesia->numero}} {{$evento->iglesia->colonia}}, {{$evento->iglesia->ciudad}} {{$evento->iglesia->estado}}, {{$evento->iglesia->pais}}.</p>
-            <a target="_blank" href="https://google.com/maps/search/{{$evento->iglesia->calle}}+{{$evento->iglesia->numero}}+{{$evento->iglesia->colonia}},+{{$evento->iglesia->ciudad}}+{{$evento->iglesia->estado}},+{{$evento->iglesia->pais}}" class="btn">Abrir mapa 🗺️</a>
-        @else
-            <p>📍 {{$evento->direccion}}</p>
-            <a target="_blank" href="https://google.com/maps/search/{{$evento->direccion}}" class="btn">Abrir mapa 🗺️</a>
-        @endif
-        
   
         <div id="btn-descargar" class="btn">Descargar la aplicación para más detalles</div>
     </div>
