@@ -41,11 +41,18 @@ class EventoController extends  ApiController
             ]);
 
         } else{
+            $userId = null;
 
             if(!$request->user_id){
-                return $this->badRequest([
-                    'status' => 'Error', 
-                    'message' => 'El usuario es requerido.'
+                return $this->ok([
+                    'status' => 'Success', 
+                    'data' => [
+                        'eventos' => Evento::where('id', '!=', 1)->where('is_public',1)->where('fecha_fin','>',Carbon::now()->subDays(1)->format ('Y-m-d h:i:s'))->orderBy('fecha_inicio','asc')->with(["iglesia"])->withCount('interested')
+                        ->withCount(['interested as user_interested' => function ($query) use ($userId) {
+                            $query->where('user_id', $userId);
+                        }])
+                        ->get()
+                    ]
                 ]);
             }
 
