@@ -38,7 +38,7 @@ class CronjobsController extends ApiController
         ];
 
         if ($eventoSemana) {
-            $body = "¡Faltan 7 días para $eventoSemana->nombre! 📅 No olvides reservar la fecha. Será a las " 
+            $body = "¡Faltan 7 días para $eventoSemana->nombre! 📅 ¡No te lo puedes perder! Te esperamos a las " 
                 . date('H:i', strtotime($eventoSemana->fecha_inicio)) . " hrs ⏰";
             $eventoSemana->update(['reminder' => 1]);
             $data['event_id'] = $eventoSemana->id;
@@ -46,7 +46,7 @@ class CronjobsController extends ApiController
         }
         
         if ($eventoDosDias) {
-            $body = "¡Faltan solo 2 días para $eventoDosDias->nombre! ⏳ No te olvides de confirmar tu asistencia. Será a las " 
+            $body = "¡Faltan solo 2 días para $eventoDosDias->nombre! ⏳ ¡No te lo pierdas! Te esperamos a las " 
             . date('H:i', strtotime($eventoDosDias->fecha_inicio)) . " hrs ⏰";
             $eventoDosDias->update(['reminder' => 2]);
             $data['event_id'] = $eventoDosDias->id;
