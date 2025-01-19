@@ -116,7 +116,8 @@ class PaseListaController extends ApiController
             'telefono' => $request->telefono,
             'asignacion' => $request->asignacion,
             'epastores' => $request->epastores,
-            'sexo_id' => 0
+            'sexo_id' => 0,
+            'iglesia_id' => $request->iglesia_id
         ]);
 
         $maestroUser = Maestro::where('user_id', $user->id)->first();
