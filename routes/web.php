@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'IndexController@index');
 Route::get('/icarm-app', 'IndexController@index');
-Route::get('/radio', 'IndexController@index');
+Route::get('/radio', 'IndexController@radio');
 Route::get('/evento/{slug}', 'IndexController@evento');
 
 

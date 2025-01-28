@@ -12,6 +12,10 @@ class IndexController extends Controller
         return view("icarm_app");
     }
 
+    public function radio(Request $request){
+        return view("radio");
+    }
+
     public function evento($slug){
         $evento = Evento::where('link', $slug)->with('iglesia')->first();
         if($evento){
