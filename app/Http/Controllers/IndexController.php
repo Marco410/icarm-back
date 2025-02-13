@@ -24,4 +24,8 @@ class IndexController extends Controller
             return view("icarm_app");
         }
     }
+
+    public function delete_account(Request $request){
+        return view("delete_account");
+    }
 }

@@ -21,6 +21,7 @@ Route::get('/', 'IndexController@index');
 Route::get('/icarm-app', 'IndexController@index');
 Route::get('/radio', 'IndexController@radio');
 Route::get('/evento/{slug}', 'IndexController@evento');
+Route::get('/eliminar-cuenta', 'IndexController@delete_account');
 
 
 Route::get('/clear', function () {
