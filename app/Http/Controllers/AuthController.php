@@ -248,14 +248,30 @@ class AuthController extends ApiController
 
     public function deleteAccount(Request $request){
 
-        $user = User::where('id', $request->userId)->update([ 
-            'active' => 0
-        ]);
+        $user = null;
+        if($request->userId){
+            $user = User::where('id', $request->userId)->update([ 
+                'active' => 0
+            ]);
+        }else if ($request->email){
+            $user = User::where('email', $request->email)->where('active',1)->first();
 
-        return $this->ok([
-            'status' => 'Success',
-            'message' => 'Cuenta eliminada con éxito.'
-        ]);
+            if($user){
+                $user->active = 0;
+                $user->save();
+            }
+        }
+        if($user){
+            return $this->ok([
+                'status' => 'Success',
+                'message' => 'Cuenta eliminada con éxito.'
+            ]);
+        }else{
+            return $this->notFound([
+                'status' => 'Not Found',
+                'message' => 'No pudimos encontrar una cuenta asociada a este correo.'
+            ]);
+        }
     }
 
     public function forgot(Request $request){
