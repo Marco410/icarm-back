@@ -136,9 +136,28 @@ class AuthController extends ApiController
             ]);
         }
 
+        $usuarioExistente = User::whereRaw("SOUNDEX(nombre) = SOUNDEX(?) AND SOUNDEX(apellido_paterno) = SOUNDEX(?) AND SOUNDEX(apellido_materno) = SOUNDEX(?)", [
+            $nombre,
+            $request->apellido_paterno,
+            $request->apellido_materno
+        ])->first();
+
+        if (!$usuarioExistente) {
+            $usuarioExistente = User::where('nombre', 'LIKE', "%{$nombre}%")
+                ->where('apellido_paterno', 'LIKE', "%{$request->apellido_paterno}%")
+                ->where('apellido_materno', 'LIKE', "%{$request->apellido_materno}%")
+                ->first();
+        }
+
+        if ($usuarioExistente) {
+            return $this->badRequest([
+                'status' => 'Error', 
+                'message' => 'Ya existe un usuario con un nombre similar registrado. Si se te olvidó tu contraseña, da clic en "¿Olvidaste tu contraseña?" o pasa al ministerio de video.'
+            ]);
+        }
 
         $user = User::create([ 
-            'nombre' => $request->nombre,
+            'nombre' => $nombre,
             'apellido_paterno' => $request->apellido_paterno,
             'apellido_materno' => $request->apellido_materno,
             'fecha_nacimiento' => $request->fecha_nacimiento,
