@@ -122,7 +122,8 @@
                 <li>Información Personal</li>
                 <li>Correo electrónico</li>
                 <li>Asistencias de tus clases y eventos</li>
-                <li>Información relacionada a los eventos a los que estuviste interesado</li>
+                <li>Acceso a la radio</li>
+                <li>Información relacionada de eventos a los que estuviste interesado</li>
             </ul>
 
             <div style="display: flex; flex-direction: column; text-align: center; padding: 10px;">
