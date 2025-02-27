@@ -117,6 +117,13 @@
             <p>Este espacio está destinado para que puedas eliminar tu cuenta de la aplicación de forma rápida y sencilla.</p>
             <p>✉️ Ingresa tu correo y, si se encuentra en nuestra base de datos, procederemos a eliminar tu cuenta en un momento.</p>
             <p>⚠️ Esta acción es irreversible.</p>
+            <h3>¿Qué datos se eliminarán?</h3>
+            <ul>
+                <li>Información Personal</li>
+                <li>Correo electrónico</li>
+                <li>Asistencias de tus clases y eventos</li>
+                <li>Información relacionada a los eventos a los que estuviste interesado</li>
+            </ul>
 
             <div style="display: flex; flex-direction: column; text-align: center; padding: 10px;">
                 <input type="email" id="email" name="email" class="styled-input" placeholder="Escribe aquí..." required />
