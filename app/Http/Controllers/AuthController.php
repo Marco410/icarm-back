@@ -127,7 +127,7 @@ class AuthController extends ApiController
         $password = hash('sha512', $request->password);
 
 
-        $u = User::where('email',$email)->first();
+        $u = User::where('email',$email)->where('active',1)->first();
 
         if($u){
             return $this->badRequest([
@@ -140,12 +140,13 @@ class AuthController extends ApiController
             $nombre,
             $request->apellido_paterno,
             $request->apellido_materno
-        ])->first();
+        ])->where('active',1)->first();
 
         if (!$usuarioExistente) {
             $usuarioExistente = User::where('nombre', 'LIKE', "%{$nombre}%")
                 ->where('apellido_paterno', 'LIKE', "%{$request->apellido_paterno}%")
-                ->where('apellido_materno', 'LIKE', "%{$request->apellido_materno}%")
+                ->where('apellido_materno', 'LIKE', "%{$request->apellido_materno}%")->where('active')
+                ->where('active',1)
                 ->first();
         }
 
