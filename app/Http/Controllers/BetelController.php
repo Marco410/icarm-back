@@ -13,7 +13,27 @@ class BetelController extends ApiController
     public $notificationService;
 
     public function getAll(Request $request){
-        $beteles = Betel::with(['user','user2','user_anf','user_anf2'])->get();
+
+        //$beteles = Betel::with(['user','user2','user_anf','user_anf2'])->get();
+
+        $lat = request()->input('lat');
+        $lng = request()->input('lng');
+        $maxDistance = 50;
+
+        $beteles = Betel::selectRaw("
+            *, ST_Distance_Sphere(
+                point(lng, lat), 
+                point(?, ?)
+            ) / 1000 AS distance
+        ", [$lng, $lat])
+        ->whereNotNull('lat')
+        ->whereNotNull('lng')
+        ->having('distance', '<', $maxDistance)
+        ->orderBy('distance')
+        ->with(['user','user2','user_anf','user_anf2'])
+        ->get();
+        
+        
         if($beteles){
             return $this->ok([
                 'status' => 'Success', 
@@ -48,6 +68,8 @@ class BetelController extends ApiController
             'direccion' => $request->direccion,
             'contacto' => $request->contacto,
             'telefono' => $request->telefono,
+            'lat' => $request->lat,
+            'lng' => $request->lng,
         ]);
 
         if($betel){
@@ -83,6 +105,8 @@ class BetelController extends ApiController
                 'map_url' => $request->map_url,
                 'direccion' => $request->direccion,
                 'telefono' => $request->telefono,
+                'lat' => $request->lat,
+                'lng' => $request->lng,
             ]);
 
             return $this->ok([

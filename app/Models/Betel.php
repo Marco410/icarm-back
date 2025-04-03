@@ -25,6 +25,8 @@ class Betel extends Model
         'map_url',
         'direccion',
         'telefono',
+        'lat',
+        'lng'
     ];
 
     protected $hidden = [
