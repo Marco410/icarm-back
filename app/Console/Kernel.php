@@ -27,9 +27,6 @@ class Kernel extends ConsoleKernel
     {
          $schedule->command('reminder:event')->dailyAt('10:00');
 
-          $schedule->call(function () {
-            \Log::info('Cron job ejecutado: ' . now());
-        })->everyMinute();
     }
 
     /**
