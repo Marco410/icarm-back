@@ -25,7 +25,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+         $schedule->command('reminder:event')->dailyAt('10:00');
+
+          $schedule->call(function () {
+            \Log::info('Cron job ejecutado: ' . now());
+        })->everyMinute();
     }
 
     /**

@@ -18,16 +18,17 @@ class CronjobsController extends ApiController
     }
 
 
-    public function reminderEvent(Request $request)
+    public function reminderEvent() 
     {
 
         $eventoSemana = $this->searchEvent(7, 0);    // 7 días antes 
         $eventoDosDias = $this->searchEvent(2, 1);   // 2 días antes
         $eventoMañana = $this->searchEvent(1, 2);    // 1 día antes
 
-        $tokens = FirebaseToken::orderBy('created_at')
+        $tokens = FirebaseToken::orderBy('id', 'desc')
             ->get()
-            ->unique('user_id')->values();
+            ->unique('user_id')
+            ->values();
 
 
         $title = "📆 Recordatorio de evento ";
@@ -41,7 +42,7 @@ class CronjobsController extends ApiController
             $body = "¡Faltan 7 días para $eventoSemana->nombre! 📅 ¡No te lo puedes perder! Te esperamos a las " 
                 . date('g:i a', strtotime($eventoSemana->fecha_inicio)) . " ⏰";
             $eventoSemana->update(['reminder' => 1]);
-            $data['event_id'] = $eventoSemana->id;
+            $data['event_link'] = $eventoSemana->link;
             $this->sendReminder($tokens, $title, $body, $data);
         }
         
@@ -49,7 +50,7 @@ class CronjobsController extends ApiController
             $body = "¡Faltan solo 2 días para $eventoDosDias->nombre! ⏳ ¡No te lo pierdas! Te esperamos a las " 
             . date('g:i a', strtotime($eventoDosDias->fecha_inicio)) . " ⏰";
             $eventoDosDias->update(['reminder' => 2]);
-            $data['event_id'] = $eventoDosDias->id;
+            $data['event_link'] = $eventoDosDias->link;
             $this->sendReminder($tokens, $title, $body, $data);
         }
 
@@ -57,7 +58,7 @@ class CronjobsController extends ApiController
             $body = "¡Mañana es $eventoMañana->nombre! 🎉 No te lo pierdas. Te esperamos puntualmente a las " 
                 . date('g:i a', strtotime($eventoMañana->fecha_inicio)) . " ⏰";
             $eventoMañana->update(['reminder' => 3]);
-            $data['event_id'] = $eventoMañana->id;
+            $data['event_link'] = $eventoMañana->link;
             $this->sendReminder($tokens, $title, $body, $data);
         }
         return null;
