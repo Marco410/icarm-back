@@ -152,7 +152,9 @@ class UserController extends ApiController
 
         if($user->foto_perfil != null){
             $path = public_path() . '/usuarios/' . $user->foto_perfil;
-            unlink($path);
+            if (file_exists($path)) {
+                unlink($path);
+            }
         }
 
         $nameFoto = $this->storeFoto($request,$user->id,'foto_perfil');
