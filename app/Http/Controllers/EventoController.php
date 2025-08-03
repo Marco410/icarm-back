@@ -23,110 +23,260 @@ class EventoController extends  ApiController
     public function index(Request $request)
     {
 
+        try {
+            // Validar parámetros de entrada
+            if ($request->has('isAdmin') && !in_array($request->isAdmin, ['admin', 'admin_list', 'user'])) {
+                return $this->badRequest([
+                    'status' => 'Error',
+                    'message' => 'Valor inválido para el parámetro isAdmin'
+                ]);
+            }
 
-        if($request->isAdmin == "admin"){
-            return $this->ok([
-                'status' => 'Success', 
-                'data' => [
-                    'eventos' => Evento::orderBy('fecha_inicio','asc')->with(["iglesia"])->get()
-                ]
-            ]);
+            // Si es admin, devolver todos los eventos
+            if ($request->isAdmin == "admin") {
+                $eventos = Evento::orderBy('fecha_inicio', 'asc')
+                    ->where('iglesia_id', $request->churchID)
+                    ->with(["iglesia"])
+                    ->get();
 
-        }elseif($request->isAdmin == "admin_list"){
-            return $this->ok([
-                'status' => 'Success', 
-                'data' => [
-                    'eventos' => Evento::orderBy('fecha_inicio','desc')->with(["iglesia"])->get()
-                ]
-            ]);
-
-        } else{
-            $userId = null;
-
-            if(!$request->user_id){
                 return $this->ok([
                     'status' => 'Success', 
                     'data' => [
-                        'eventos' => Evento::where('id', '!=', 1)->where('is_public',1)->where('fecha_fin','>',Carbon::now()->subDays(1)->format ('Y-m-d h:i:s'))->orderBy('fecha_inicio','asc')->with(["iglesia"])->withCount('interested')
-                        ->withCount(['interested as user_interested' => function ($query) use ($userId) {
-                            $query->where('user_id', $userId);
-                        }])
-                        ->get()
+                        'eventos' => $eventos
+                    ]
+                ]);
+            }
+
+            // Si es admin_list, devolver eventos ordenados por fecha descendente
+            if ($request->isAdmin == "admin_list") {
+                $eventos = Evento::orderBy('fecha_inicio', 'desc')
+                    ->where('iglesia_id', $request->churchID)
+                    ->with(["iglesia"])
+                    ->get();
+
+                return $this->ok([
+                    'status' => 'Success', 
+                    'data' => [
+                        'eventos' => $eventos
                     ]
                 ]);
             }
 
 
-            $userId = $request->user_id;
-            return $this->ok([
-                'status' => 'Success', 
-                'data' => [
-                    'eventos' => Evento::where('id', '!=', 1)->where('is_public',1)->where('fecha_fin','>',Carbon::now()->subDays(1)->format ('Y-m-d h:i:s'))->orderBy('fecha_inicio','asc')->with(["iglesia"])->withCount('interested')
+            if ($request->isAdmin == "user") {
+                $userId = $request->user_id;
+
+                $eventos = Evento::where('id', '!=', 1)
+                    ->where('iglesia_id', $request->churchID)
+                    ->where('is_public', 1)
+                    ->where('fecha_fin', '>', Carbon::now()->subDays(1)->format('Y-m-d H:i:s'))
+                    ->orderBy('fecha_inicio', 'asc')
+                    ->with(["iglesia"])
+                    ->withCount('interested')
                     ->withCount(['interested as user_interested' => function ($query) use ($userId) {
                         $query->where('user_id', $userId);
                     }])
-                    ->get()
+                    ->get();
+            }
+
+            // Para usuarios normales, devolver eventos públicos
+            // For nomal users, we need to return public events
+            $userId = $request->user_id ?? null;
+            $currentDate = Carbon::now()->subDays(1)->format('Y-m-d H:i:s');
+
+            $query = Evento::where('id', '!=', 1)
+                ->where('is_public', 1)
+                ->where('fecha_fin', '>', $currentDate)
+                ->orderBy('fecha_inicio', 'asc')
+                ->with(["iglesia"])
+                ->withCount('interested');
+
+            // Si hay un usuario autenticado, agregar información de interés
+            if ($userId) {
+                $query->withCount(['interested as user_interested' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                }]);
+            }
+
+            $eventos = $query->get();
+
+            return $this->ok([
+                'status' => 'Success', 
+                'data' => [
+                    'eventos' => $eventos
                 ]
             ]);
+
+        } catch (\Exception $e) {
+            return $this->badRequest([
+                'status' => 'Error',
+                'message' => 'No pudimos obtener los eventos, intente más tarde',
+                'debug' => config('app.debug') ? $e->getMessage() : null
+            ]);
         }
-        
     }
 
 
     public function get(Request $request)
     {
-        
-        return $this->ok([
-            'status' => 'Success', 
-            'data' => [
-                'evento' => Evento::where('link', $request->link)->with(["iglesia"])->withCount(['interested'])->get()
-            ]
-        ]);
+        try {
+            // Validar que el link esté presente
+            if (!$request->has('link') || empty($request->link)) {
+                return $this->badRequest([
+                    'status' => 'Error',
+                    'message' => 'El parámetro link es requerido'
+                ]);
+            }
+
+            $evento = Evento::where('link', $request->link)
+                ->with(["iglesia"])
+                ->withCount(['interested'])
+                ->first();
+
+            if (!$evento) {
+                return $this->badRequest([
+                    'status' => 'Error',
+                    'message' => 'Evento no encontrado'
+                ]);
+            }
+
+            return $this->ok([
+                'status' => 'Success', 
+                'data' => [
+                    'evento' => $evento
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->badRequest([
+                'status' => 'Error',
+                'message' => 'No pudimos obtener el evento, intente más tarde',
+                'debug' => config('app.debug') ? $e->getMessage() : null
+            ]);
+        }
     }
 
     public function getInterested(Request $request)
     {
-        
-        return $this->ok([
-            'status' => 'Success', 
-            'data' => [
-                'interested' => Interested::where('evento_id', $request->eventoID)->where('user_id', $request->userID)->count() != 0 ? true: false,
-            ]
-        ]);
+        try {
+            // Validar campos requeridos
+            $required_fields = ['eventoID', 'userID'];
+            foreach ($required_fields as $field) {
+                if (!$request->has($field) || !$request->$field) {
+                    return $this->badRequest([
+                        'status' => 'Error',
+                        'message' => "El campo {$field} es requerido"
+                    ]);
+                }
+            }
+
+            // Verificar que el evento existe
+            $evento = Evento::find($request->eventoID);
+            if (!$evento) {
+                return $this->badRequest([
+                    'status' => 'Error',
+                    'message' => 'Evento no encontrado'
+                ]);
+            }
+
+            // Verificar que el usuario existe
+            $user = \App\Models\User::find($request->userID);
+            if (!$user) {
+                return $this->badRequest([
+                    'status' => 'Error',
+                    'message' => 'Usuario no encontrado'
+                ]);
+            }
+
+            $isInterested = Interested::where('evento_id', $request->eventoID)
+                ->where('user_id', $request->userID)
+                ->exists();
+
+            return $this->ok([
+                'status' => 'Success', 
+                'data' => [
+                    'interested' => $isInterested
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->badRequest([
+                'status' => 'Error',
+                'message' => 'No pudimos verificar el interés del usuario, intente más tarde',
+                'debug' => config('app.debug') ? $e->getMessage() : null
+            ]);
+        }
     }
 
 
     public function create_interested(Request $request)
     {
+        try {
+            // Validar campos requeridos
+            $required_fields = ['eventoID', 'userID'];
+            foreach ($required_fields as $field) {
+                if (!$request->has($field) || !$request->$field) {
+                    return $this->badRequest([
+                        'status' => 'Error',
+                        'message' => "El campo {$field} es requerido"
+                    ]);
+                }
+            }
 
-        $interest = Interested::where('evento_id', $request->eventoID)->where('user_id', $request->userID)->count();
+            // Verificar que el evento existe
+            $evento = Evento::find($request->eventoID);
+            if (!$evento) {
+                return $this->badRequest([
+                    'status' => 'Error',
+                    'message' => 'Evento no encontrado'
+                ]);
+            }
 
+            // Verificar que el usuario existe
+            $user = \App\Models\User::find($request->userID);
+            if (!$user) {
+                return $this->badRequest([
+                    'status' => 'Error',
+                    'message' => 'Usuario no encontrado'
+                ]);
+            }
 
-        if($interest == 0){
-            
-            $interested = Interested::create([
-                'evento_id' => $request->eventoID,
-                'user_id' => $request->userID,
-            ]);
-        }else{
-            $interested = Interested::where('evento_id', $request->eventoID)->where('user_id', $request->userID)->delete();
-        }
+            // Verificar si ya existe el interés
+            $existingInterest = Interested::where('evento_id', $request->eventoID)
+                ->where('user_id', $request->userID)
+                ->first();
 
-        if($interested){
+            if ($existingInterest) {
+                // Si ya existe, eliminarlo (toggle off)
+                $existingInterest->delete();
+                $action = 'removed';
+                $message = 'Interés removido exitosamente';
+            } else {
+                // Si no existe, crearlo (toggle on)
+                $interested = Interested::create([
+                    'evento_id' => $request->eventoID,
+                    'user_id' => $request->userID,
+                ]);
+                $action = 'added';
+                $message = 'Interés agregado exitosamente';
+            }
+
             return $this->ok([
                 'status' => 'Success', 
+                'message' => $message,
                 'data' => [
-                    'interested' => $interested
+                    'action' => $action,
+                    'interested' => $action === 'added'
                 ]
             ]);
-        }else{
+
+        } catch (\Exception $e) {
             return $this->badRequest([
-                'status' => 'Error', 
-                'message' => 'No pudimos completar la operación, intente más tarde'
+                'status' => 'Error',
+                'message' => 'No pudimos procesar el interés del usuario, intente más tarde',
+                'debug' => config('app.debug') ? $e->getMessage() : null
             ]);
         }
-        
-      
     }
 
 
@@ -137,125 +287,184 @@ class EventoController extends  ApiController
      */
     public function create(Request $request)
     {
-        
-        $errores = array();
-        $flagValidation = true;
-        $result = (object)[];
-   
-     /*    $countEvent = DB::table('evento')
-             ->select('id')
-             ->where('iglesia_id',$request->iglesia_id)
-             ->where('nombre',$request->nombre)
-             ->where('fecha_inicio',$request->fecha_inicio)
-             ->where('fecha_fin',$request->fecha_fin)->count();
-
-        if($countEvent > 0)
-        {
-            $flagValidation = false;
-            array_push($errores,'El evento ya esta registrado');
-        } */
-
-        $iglesiaExist = DB::table('iglesias')
-            ->select('id')
-            ->where('id',$request->iglesia_id)->count();
-
-        if($iglesiaExist == 0) 
-        {
-            $flagValidation = false;
-            array_push($errores,'La iglesia que esta intentanto ingresar no existe');
-        }
-
-        if($request->fecha_fin){
-            if($request->fecha_inicio > $request ->fecha_fin)
-            {
-                $flagValidation = false;
-                array_push($errores,'La fecha de inicio es mayor que la final');
+        try {
+            // Validar campos requeridos
+            $required_fields = ['iglesia_id', 'nombre', 'fecha_inicio'];
+            foreach ($required_fields as $field) {
+                if (!$request->has($field) || empty($request->$field)) {
+                    return $this->badRequest([
+                        'status' => 'Error',
+                        'message' => "El campo {$field} es requerido"
+                    ]);
+                }
             }
-        }
-        
-        if($flagValidation){
 
-            if($request->is_favorite == 1) {
-                $eventosUpdate = Evento::where('id','!=',1)->update([
-                    'is_favorite' => 0
+            // Verificar que la iglesia existe
+            $iglesia = Iglesia::find($request->iglesia_id);
+            if (!$iglesia) {
+                return $this->badRequest([
+                    'status' => 'Error',
+                    'message' => 'La iglesia seleccionada no existe'
                 ]);
             }
-            
+
+            // Validar fechas
+            if ($request->fecha_fin && $request->fecha_inicio > $request->fecha_fin) {
+                return $this->badRequest([
+                    'status' => 'Error',
+                    'message' => 'La fecha de inicio no puede ser mayor que la fecha de fin'
+                ]);
+            }
+
+            // Validar que la fecha de inicio no sea en el pasado
+            if (Carbon::parse($request->fecha_inicio)->isPast()) {
+                return $this->badRequest([
+                    'status' => 'Error',
+                    'message' => 'La fecha de inicio no puede ser en el pasado'
+                ]);
+            }
+
+            // Si es favorito, quitar favorito de otros eventos
+            if ($request->is_favorite == 1) {
+                Evento::where('id', '!=', 1)->update(['is_favorite' => 0]);
+            }
+
+            // Crear el evento
             $evento = Evento::create([
                 'iglesia_id' => $request->iglesia_id,
-                'nombre' => $request->nombre,
-                'link' => Str::slug(trim($request->nombre . $request->fecha_inicio), '-'),
+                'nombre' => trim($request->nombre),
+                'link' => Str::slug(trim($request->nombre . ' ' . $request->fecha_inicio), '-'),
                 'fecha_inicio' => $request->fecha_inicio,
                 'fecha_fin' => $request->fecha_fin,
-                'descripcion' => $request->descripcion,
-                'direccion' => $request->direccion,
-                'is_favorite' => $request->is_favorite,
-                'can_register' => $request->can_register,
-                'is_public' => $request->is_public,
+                'descripcion' => $request->descripcion ?? '',
+                'direccion' => $request->direccion ?? '',
+                'is_favorite' => $request->is_favorite ?? 0,
+                'can_register' => $request->can_register ?? 0,
+                'is_public' => $request->is_public ?? 1,
             ]);
 
-                $nameFoto = $this->storeFoto($request,$evento->id,'img_vertical');
-                $evento->img_vertical = $nameFoto;
+            // Procesar imágenes si se proporcionan
+            if ($request->hasFile('img_vertical')) {
+                $nameFoto = $this->storeFoto($request, $evento->id, 'img_vertical');
+                if ($nameFoto) {
+                    $evento->img_vertical = $nameFoto;
+                }
+            }
 
-                $nameFotoH = $this->storeFoto($request,$evento->id,'img_horizontal');
-                $evento->img_horizontal = $nameFotoH;
-                $evento->save();
+            if ($request->hasFile('img_horizontal')) {
+                $nameFotoH = $this->storeFoto($request, $evento->id, 'img_horizontal');
+                if ($nameFotoH) {
+                    $evento->img_horizontal = $nameFotoH;
+                }
+            }
+
+            $evento->save();
 
             return $this->ok([
-                'status' => 'Success', 
-                'data' => $evento
+                'status' => 'Success',
+                'message' => 'Evento creado exitosamente',
+                'data' => $evento->load('iglesia')
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->badRequest([
+                'status' => 'Error',
+                'message' => 'No pudimos crear el evento, intente más tarde',
+                'debug' => config('app.debug') ? $e->getMessage() : null
             ]);
         }
-        else{
-            $result = (object) [
-                'type' => 'error',
-                'message' => 'Hay errores en el registro',
-                'data' => $errores
-            ];
-        }
-        return $this->ok(json_decode(json_encode($result)));
     }
 
     public function update(Request $request)
     {
-        
-        $errores = array();
-        $flagValidation = true;
-        $result = (object)[];
+        try {
+            // Validar campos requeridos
+            $required_fields = ['evento_id', 'iglesia_id', 'nombre', 'fecha_inicio'];
+            foreach ($required_fields as $field) {
+                if (!$request->has($field) || empty($request->$field)) {
+                    return $this->badRequest([
+                        'status' => 'Error',
+                        'message' => "El campo {$field} es requerido"
+                    ]);
+                }
+            }
 
-        if($flagValidation){
-
-            if($request->is_favorite == 1) {
-                $eventosUpdate = Evento::where('id','!=',1)->update([
-                    'is_favorite' => 0
+            // Verificar que el evento existe
+            $evento = Evento::find($request->evento_id);
+            if (!$evento) {
+                return $this->badRequest([
+                    'status' => 'Error',
+                    'message' => 'Evento no encontrado'
                 ]);
             }
-            
-            $evento = Evento::where('id',$request->evento_id)->update([
+
+            // Verificar que la iglesia existe
+            $iglesia = Iglesia::find($request->iglesia_id);
+            if (!$iglesia) {
+                return $this->badRequest([
+                    'status' => 'Error',
+                    'message' => 'La iglesia seleccionada no existe'
+                ]);
+            }
+
+            // Validar fechas
+            if ($request->fecha_fin && $request->fecha_inicio > $request->fecha_fin) {
+                return $this->badRequest([
+                    'status' => 'Error',
+                    'message' => 'La fecha de inicio no puede ser mayor que la fecha de fin'
+                ]);
+            }
+
+            // Si es favorito, quitar favorito de otros eventos
+            if ($request->is_favorite == 1) {
+                Evento::where('id', '!=', 1)
+                    ->where('id', '!=', $request->evento_id)
+                    ->update(['is_favorite' => 0]);
+            }
+
+            // Actualizar el evento
+            $evento->update([
                 'iglesia_id' => $request->iglesia_id,
-                'nombre' => $request->nombre,
+                'nombre' => trim($request->nombre),
                 'fecha_inicio' => $request->fecha_inicio,
                 'fecha_fin' => $request->fecha_fin,
-                'descripcion' => $request->descripcion,
-                'direccion' => $request->direccion,
-                'is_favorite' => $request->is_favorite,
-                'can_register' => $request->can_register,
-                'is_public' => $request->is_public,
+                'descripcion' => $request->descripcion ?? '',
+                'direccion' => $request->direccion ?? '',
+                'is_favorite' => $request->is_favorite ?? 0,
+                'can_register' => $request->can_register ?? 0,
+                'is_public' => $request->is_public ?? 1,
             ]);
 
+            // Procesar imágenes si se proporcionan
+            if ($request->hasFile('img_vertical')) {
+                $nameFoto = $this->storeFoto($request, $evento->id, 'img_vertical');
+                if ($nameFoto) {
+                    $evento->img_vertical = $nameFoto;
+                    $evento->save();
+                }
+            }
+
+            if ($request->hasFile('img_horizontal')) {
+                $nameFotoH = $this->storeFoto($request, $evento->id, 'img_horizontal');
+                if ($nameFotoH) {
+                    $evento->img_horizontal = $nameFotoH;
+                    $evento->save();
+                }
+            }
+
             return $this->ok([
-                'status' => 'Success', 
-                'data' => $evento
+                'status' => 'Success',
+                'message' => 'Evento actualizado exitosamente',
+                'data' => $evento->load('iglesia')
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->badRequest([
+                'status' => 'Error',
+                'message' => 'No pudimos actualizar el evento, intente más tarde',
+                'debug' => config('app.debug') ? $e->getMessage() : null
             ]);
         }
-        else{
-            $result = (object) [
-                'type' => 'error',
-                'message' => 'Hay errores en el registro',
-                'data' => $errores
-            ];
-        }
-        return $this->ok(json_decode(json_encode($result)));
     }
 
 
@@ -267,7 +476,42 @@ class EventoController extends  ApiController
      */
     public function showEvents(Request $request)
     {
-        return $this->ok(Evento::where('iglesia_id', $request->iglesia_id)->get());
+        try {
+            // Validar que iglesia_id esté presente
+            if (!$request->has('iglesia_id') || !$request->iglesia_id) {
+                return $this->badRequest([
+                    'status' => 'Error',
+                    'message' => 'El parámetro iglesia_id es requerido'
+                ]);
+            }
+
+            // Verificar que la iglesia existe
+            $iglesia = Iglesia::find($request->iglesia_id);
+            if (!$iglesia) {
+                return $this->badRequest([
+                    'status' => 'Error',
+                    'message' => 'Iglesia no encontrada'
+                ]);
+            }
+
+            $eventos = Evento::where('iglesia_id', $request->iglesia_id)
+                ->orderBy('fecha_inicio', 'asc')
+                ->get();
+
+            return $this->ok([
+                'status' => 'Success',
+                'data' => [
+                    'eventos' => $eventos
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->badRequest([
+                'status' => 'Error',
+                'message' => 'No pudimos obtener los eventos de la iglesia, intente más tarde',
+                'debug' => config('app.debug') ? $e->getMessage() : null
+            ]);
+        }
     }
 
     public function storeFoto($request,$id,$nameKey)

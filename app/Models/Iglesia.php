@@ -16,4 +16,8 @@ class Iglesia extends Model
     public function user(){
         return $this->belongsTo(User::class)->with('sexo');
     }
+
+    public function churchService(){
+        return $this->hasMany(ChurchService::class, 'church_id', 'id');
+    }
 }

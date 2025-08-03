@@ -15,7 +15,7 @@ class IglesiaController extends ApiController
     public function getAll(Request $request){
 
 
-        $iglesias = Iglesia::get();
+        $iglesias = Iglesia::with('churchService')->get();
         
         if($iglesias){
             return $this->ok([
