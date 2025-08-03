@@ -18,7 +18,7 @@ class User extends Authenticatable implements JWTSubject
 
 
     protected $fillable = [
-        'nombre', 'apellido_paterno', 'apellido_materno','telefono','email','fecha_nacimiento', 'sexo','sexo_id','iglesia_id','password','pais_id','firebase_token','active','pass_update','foto_perfil','asignacion','epastores','seminario_pass'
+        'nombre', 'apellido_paterno', 'apellido_materno','telefono','email','fecha_nacimiento', 'sexo','sexo_id','iglesia_id','password','pais_id','firebase_token','active','pass_update','foto_perfil','asignacion','epastores','seminario_pass', 'own_church'
     ];
 
     protected $hidden =[
@@ -27,6 +27,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function iglesia(){
         return $this->hasOne(Iglesia::class,'id','iglesia_id');
+    }
+
+    public function ownChurch(){
+        return $this->hasOne(Iglesia::class,'id','own_church');
     }
 
     public function evento(){

@@ -80,6 +80,12 @@ Route::group([
     Route::post('notification/delete', 'NotificationsController@delete');
     Route::post('notification/delete_all', 'NotificationsController@delete_all');
     Route::post('notification/seen_all', 'NotificationsController@seen_all');
+
+    //Servicios
+    Route::get('church-services', 'ChurchServiceController@index');
+    Route::post('church-services/create', 'ChurchServiceController@create');
+    Route::post('church-services/update/{id}', 'ChurchServiceController@update');
+    Route::post('church-services/delete/{id}', 'ChurchServiceController@delete');
     
     Route::get('cronjobs/reminderEvent', 'CronjobsController@reminderEvent');
 
