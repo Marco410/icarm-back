@@ -19,7 +19,9 @@ class ChurchServiceController extends  ApiController
 
         try {
 
-            $church_services = ChurchService::where('church_id', $request->churchID)
+            $churchID = $request->churchID ?? 1;
+
+            $church_services = ChurchService::where('church_id', $churchID)
                 ->get();
 
             return $this->ok([

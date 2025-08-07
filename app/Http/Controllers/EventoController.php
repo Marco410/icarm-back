@@ -24,6 +24,9 @@ class EventoController extends  ApiController
     {
 
         try {
+
+            $churchID = $request->churchID ?? 1;
+
             // Validar parámetros de entrada
             if ($request->has('isAdmin') && !in_array($request->isAdmin, ['admin', 'admin_list', 'user'])) {
                 return $this->badRequest([
@@ -35,7 +38,7 @@ class EventoController extends  ApiController
             // Si es admin, devolver todos los eventos
             if ($request->isAdmin == "admin") {
                 $eventos = Evento::orderBy('fecha_inicio', 'asc')
-                    ->where('iglesia_id', $request->churchID)
+                    ->where('iglesia_id', $churchID)
                     ->with(["iglesia"])
                     ->get();
 
@@ -50,7 +53,7 @@ class EventoController extends  ApiController
             // Si es admin_list, devolver eventos ordenados por fecha descendente
             if ($request->isAdmin == "admin_list") {
                 $eventos = Evento::orderBy('fecha_inicio', 'desc')
-                    ->where('iglesia_id', $request->churchID)
+                    ->where('iglesia_id', $churchID)
                     ->with(["iglesia"])
                     ->get();
 
@@ -67,7 +70,7 @@ class EventoController extends  ApiController
                 $userId = $request->user_id;
 
                 $eventos = Evento::where('id', '!=', 1)
-                    ->where('iglesia_id', $request->churchID)
+                    ->where('iglesia_id', $churchID)
                     ->where('is_public', 1)
                     ->where('fecha_fin', '>', Carbon::now()->subDays(1)->format('Y-m-d H:i:s'))
                     ->orderBy('fecha_inicio', 'asc')
