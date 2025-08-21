@@ -26,7 +26,8 @@ class Betel extends Model
         'direccion',
         'telefono',
         'lat',
-        'lng'
+        'lng',
+        'active'
     ];
 
     protected $hidden = [

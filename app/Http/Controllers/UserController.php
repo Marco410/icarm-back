@@ -2,20 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserContext;
-use App\Models\ViewUserRelationshipWithClient;
 use App\Models\User;
 use App\Models\Ministerio;
 use App\Models\UserHasMinisterios;
-use App\Models\FirebaseToken;
 use App\Services\NotificationService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 
 use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\Storage;
 
 
 class UserController extends ApiController
@@ -30,7 +24,6 @@ class UserController extends ApiController
 
     public function getUser(Request $request){
         try {
-            // Validar que userID esté presente
             if (!$request->has('userID') || !$request->userID) {
                 return $this->badRequest([
                     'status' => 'Error', 
@@ -47,7 +40,6 @@ class UserController extends ApiController
                 ]);
             }
 
-            // Asegurar que campos opcionales no sean null en la respuesta
             $user->apellido_materno = $user->apellido_materno ?? '';
             $user->telefono = $user->telefono ?? '';
             $user->fecha_nacimiento = $user->fecha_nacimiento ?? '';
@@ -180,10 +172,8 @@ class UserController extends ApiController
                 }
             }
 
-            // Obtener usuario actualizado
             $updated_user = User::where('id', $request->userID)->with(['iglesia','roles','pais','sexo','ministerios'])->first();
 
-            // Asegurar que campos opcionales no sean null en la respuesta
             if ($updated_user) {
                 $updated_user->apellido_materno = $updated_user->apellido_materno ?? '';
                 $updated_user->telefono = $updated_user->telefono ?? '';
@@ -214,7 +204,6 @@ class UserController extends ApiController
         try {
             $query = User::with(['iglesia','roles','pais','sexo','ministerios', 'ownChurch']);
             
-            // Aplicar filtro de nombre si está presente
             if ($request->has('nombre') && !empty($request->nombre)) {
                 $partes = explode(' ', $request->nombre);
             
@@ -229,14 +218,12 @@ class UserController extends ApiController
                 });
             }
             
-            // Aplicar filtro de rol si está presente
             if ($request->has('role') && !empty($request->role)) {
                 $query->role($request->role);
             }
             
             $users = $query->get();
 
-            // Asegurar que campos opcionales no sean null en la respuesta
             foreach ($users as $user) {
                 $user->apellido_materno = $user->apellido_materno ?? '';
                 $user->telefono = $user->telefono ?? '';
@@ -265,7 +252,6 @@ class UserController extends ApiController
 
     public function sendNotificationToUSer(Request $request){
         try {
-            // Validar campos requeridos
             $required_fields = ['user_id', 'title', 'body'];
             foreach ($required_fields as $field) {
                 if (!$request->has($field) || !$request->$field) {
@@ -276,7 +262,6 @@ class UserController extends ApiController
                 }
             }
 
-            // Verificar que el usuario existe
             $user = User::find($request->user_id);
             if (!$user) {
                 return $this->badRequest([
@@ -306,7 +291,6 @@ class UserController extends ApiController
 
     public function updateFotoPerfil(Request $request)  {
         try {
-            // Validar que userID esté presente
             if (!$request->has('userID') || !$request->userID) {
                 return $this->badRequest([
                     'status' => 'Error', 
@@ -314,7 +298,6 @@ class UserController extends ApiController
                 ]);
             }
 
-            // Verificar que el usuario existe
             $user = User::where('id', $request->userID)->first();
             if (!$user) {
                 return $this->badRequest([
@@ -323,7 +306,6 @@ class UserController extends ApiController
                 ]);
             }
 
-            // Verificar que se haya enviado una imagen
             if (!$request->hasFile('foto_perfil')) {
                 return $this->badRequest([
                     'status' => 'Error', 
@@ -331,7 +313,6 @@ class UserController extends ApiController
                 ]);
             }
 
-            // Eliminar foto anterior si existe
             if ($user->foto_perfil != null) {
                 $path = public_path() . '/usuarios/' . $user->foto_perfil;
                 if (file_exists($path)) {
@@ -369,7 +350,6 @@ class UserController extends ApiController
 
     public function deleteFotoPerfil(Request $request){
         try {
-            // Validar que userID esté presente
             if (!$request->has('userID') || !$request->userID) {
                 return $this->badRequest([
                     'status' => 'Error', 
@@ -377,7 +357,6 @@ class UserController extends ApiController
                 ]);
             }
 
-            // Verificar que el usuario existe
             $user = User::where('id', $request->userID)->first();
             if (!$user) {
                 return $this->badRequest([
@@ -386,7 +365,6 @@ class UserController extends ApiController
                 ]);
             }
 
-            // Verificar si tiene foto de perfil
             if ($user->foto_perfil == null) {
                 return $this->badRequest([
                     'status' => 'Error', 
@@ -396,12 +374,10 @@ class UserController extends ApiController
 
             $path = public_path() . '/usuarios/' . $user->foto_perfil;
             
-            // Eliminar archivo físico si existe
             if (file_exists($path)) {
                 unlink($path);
             }
 
-            // Actualizar base de datos
             $userU = User::where('id', $user->id)->update([ 
                 'foto_perfil' => null
             ]);
@@ -429,12 +405,10 @@ class UserController extends ApiController
 
             $file = $request->file($nameKey);
             
-            // Validar que sea una imagen válida
             if (!$file->isValid()) {
                 return null;
             }
 
-            // Validar tipo de archivo
             $allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
             if (!in_array($file->getMimeType(), $allowed_types)) {
                 return null;
@@ -443,14 +417,12 @@ class UserController extends ApiController
             $name = $id . ".jpg";
             $ruta = public_path() . '/usuarios';
 
-            // Crear directorio si no existe
             if (!file_exists($ruta)) {
                 mkdir($ruta, 0775, true);
             }
 
             $path = $ruta . "/" . $name;
 
-            // Procesar y guardar imagen
             Image::make($request->file($nameKey))->encode('jpg', 50)->save($path);
 
             return $name;
