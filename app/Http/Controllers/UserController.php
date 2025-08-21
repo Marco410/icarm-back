@@ -252,7 +252,7 @@ class UserController extends ApiController
 
     public function sendNotificationToUSer(Request $request){
         try {
-            $required_fields = ['user_id', 'title', 'body'];
+            $required_fields = ['user_id', 'title', 'msg'];
             foreach ($required_fields as $field) {
                 if (!$request->has($field) || !$request->$field) {
                     return $this->badRequest([
