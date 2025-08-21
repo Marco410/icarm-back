@@ -274,7 +274,7 @@ class UserController extends ApiController
             $notificationService = new NotificationService();
             $data["type"] = "notification";
 
-            $notificationService->sendNotificationToUserInAPI($request->user_id, 0, $request->title, $request->body, $data);
+            $notificationService->sendNotificationToUserInAPI($request->user_id, 0, $request->title, $request->msg, $data);
 
             return $this->ok([
                 'status' => 'Success', 
