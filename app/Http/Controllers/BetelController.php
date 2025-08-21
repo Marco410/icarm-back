@@ -31,6 +31,7 @@ class BetelController extends ApiController
         ->having('distance', '<', $maxDistance)
         ->orderBy('distance')
         ->with(['user','user2','user_anf','user_anf2'])
+        ->where('active', '!=', 0)
         ->get();
         
         
