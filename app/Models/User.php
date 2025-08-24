@@ -7,6 +7,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\UserHasMinisterios;
+use DateTimeInterface;
+use DateTimeZone;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -24,6 +26,12 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden =[
         'password'
     ];
+
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->setTimezone(new DateTimeZone('America/Mexico_City'))
+                    ->format('Y-m-d H:i:s');
+    }
 
     public function iglesia(){
         return $this->hasOne(Iglesia::class,'id','iglesia_id');

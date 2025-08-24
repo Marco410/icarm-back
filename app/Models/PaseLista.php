@@ -3,9 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class PaseLista extends Model
+class PaseLista extends BaseModel
 {
     use HasFactory;
 
