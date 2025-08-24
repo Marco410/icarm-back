@@ -1,0 +1,12 @@
+[
+    {
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.mtm.icarm",
+        "sha256_cert_fingerprints": [
+          "5F:FE:76:63:9B:CF:5B:0E:59:42:C5:FD:A5:DB:B6:16:1D:EA:70:BA:49:FE:B5:7B:14:9B:87:D8:89:2D:C0:CD"
+        ]
+      }
+    }
+  ]
