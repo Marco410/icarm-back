@@ -13,12 +13,14 @@ public/eventos
 public/ads
 public/beteles
 public/usuarios
+public/iglesias
+public/assets
 public/hot
-
-# Laravel 5 & Lumen specific with changed public path
 public_html/eventos
 public_html/storage
 public_html/hot
+error_log
+icarm-back/
 
 storage/*.key
 Homestead.yaml
