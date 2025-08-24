@@ -1,0 +1,19 @@
+{
+  "applinks": {
+        "apps": [],
+        "details": [
+      {
+        "appID": "6XY5H68W64.com.mtm.icarm",
+        "paths": ["*"]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "6XY5H68W64.com.mtm.icarm"
+    ]
+  },
+   "appclips": {
+        "apps": ["6XY5H68W64.com.mtm.icarm"]
+    }
+}
